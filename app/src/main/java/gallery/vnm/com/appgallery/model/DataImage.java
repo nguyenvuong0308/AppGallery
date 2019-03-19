@@ -1,18 +1,19 @@
+package gallery.vnm.com.appgallery.model;
 
-package gallery.vnm.com.appgallery;
-
-import java.util.List;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Data {
+import java.util.ArrayList;
+import java.util.List;
+
+public class DataImage {
 
     @SerializedName("message")
     @Expose
     private String message;
     @SerializedName("images")
     @Expose
-    private List<String> images = null;
+    private ArrayList<String> images = null;
     @SerializedName("post_type")
     @Expose
     private String postType;
@@ -31,11 +32,11 @@ public class Data {
         this.message = message;
     }
 
-    public List<String> getImages() {
+    public ArrayList<String> getImages() {
         return images;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(ArrayList<String> images) {
         this.images = images;
     }
 
