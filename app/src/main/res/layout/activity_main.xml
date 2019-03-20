@@ -11,6 +11,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rcvListImage"
+            tools:listitem="@layout/item_list_image"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
@@ -33,6 +34,7 @@
             android:background="#ffffff"
             android:choiceMode="singleChoice"
             android:divider="@android:color/transparent"
+            tools:listitem="@layout/item_tv"
             android:dividerHeight="0dp" />
     </LinearLayout>
 

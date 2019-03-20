@@ -1,17 +1,81 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@android:color/white"
     android:layout_height="wrap_content">
-    <TextView
-        android:text="Message"
-        android:id="@+id/tvMessage"
-        android:textColor="@color/colorPrimary"
+
+    <RelativeLayout
+        android:id="@+id/lnMessage"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp">
+
+        <EditText
+            android:enabled="false"
+            android:id="@+id/tvMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toStartOf="@+id/tbControl1"
+            android:padding="4dp"
+            android:layout_alignParentStart="true"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="Messagssssssssssssssssssssssssssssssssssssssssssssssssssssssssssse"
+            android:textColor="@color/colorPrimary"
+            android:textSize="@dimen/text_size_huge" />
+
+        <TableRow
+            android:id="@+id/tbControl1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true">
+
+            <ImageView
+                android:id="@+id/ivEditMessage"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_edit" />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_download" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/tbControl2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tbControl1"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="10dp"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/ivCopy"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_copy" />
+
+            <ImageView
+                android:id="@+id/ivExpandLess"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginEnd="10dp"
+                android:src="@drawable/ic_expand_less" />
+        </TableRow>
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@+id/tvMessage"
-        android:layout_width="match_parent"
         android:id="@+id/rcvImages"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lnMessage"
         android:nestedScrollingEnabled="false"
-        android:layout_height="wrap_content"/>
+        tools:listitem="@layout/item_1" />
 </RelativeLayout>

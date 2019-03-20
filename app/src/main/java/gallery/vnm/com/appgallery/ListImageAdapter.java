@@ -1,13 +1,21 @@
 package gallery.vnm.com.appgallery;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -79,7 +87,24 @@ public class ListImageAdapter extends RecyclerView.Adapter<ListImageAdapter.List
         }
         imageAdapter.setImageOnClick(mImageOnClick);
         imageAdapter.setListImageOnClick(mListImageOnClick);
-
+        holder.mIvEditMessage.setOnClickListener(v -> {
+            holder.mTvMessage.setSingleLine(false);
+            holder.mTvMessage.setEnabled(true);
+            holder.mTbControl2.setVisibility(View.VISIBLE);
+        });
+        holder.mIvExpandLess.setOnClickListener(v -> {
+            holder.mTbControl2.setVisibility(View.GONE);
+            holder.mTvMessage.setSingleLine(true);
+            holder.mTvMessage.setEnabled(false);
+        });
+        holder.mIvCopy.setOnClickListener(v -> {
+            ClipboardManager clipboard = (ClipboardManager)mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipData clip = ClipData.newPlainText(holder.mTvMessage.getText(), holder.mTvMessage.getText());
+            if (clipboard != null) {
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(mContext, "Copy thành công!", Toast.LENGTH_SHORT).show();
+            }
+        });
         holder.mRcvImage.setAdapter(imageAdapter);
         holder.mRcvImage.setLayoutManager(layoutManager);
         holder.mRcvImage.setHasFixedSize(true);
@@ -105,12 +130,20 @@ public class ListImageAdapter extends RecyclerView.Adapter<ListImageAdapter.List
 
     public class ListImageHolder extends RecyclerView.ViewHolder {
         private TextView mTvMessage;
+        private ImageView mIvEditMessage;
+        private ImageView mIvCopy;
+        private ImageView mIvExpandLess;
         private RecyclerView mRcvImage;
+        private TableRow mTbControl2;
 
         ListImageHolder(View itemView) {
             super(itemView);
             mTvMessage = itemView.findViewById(R.id.tvMessage);
+            mIvEditMessage = itemView.findViewById(R.id.ivEditMessage);
             mRcvImage = itemView.findViewById(R.id.rcvImages);
+            mIvCopy = itemView.findViewById(R.id.ivCopy);
+            mIvExpandLess = itemView.findViewById(R.id.ivExpandLess);
+            mTbControl2 = itemView.findViewById(R.id.tbControl2);
         }
     }
 
