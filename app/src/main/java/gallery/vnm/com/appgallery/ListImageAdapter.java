@@ -6,9 +6,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.InputFilter;
-import android.text.Spanned;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,10 +48,11 @@ public class ListImageAdapter extends RecyclerView.Adapter<ListImageAdapter.List
 
     @Override
     public void onBindViewHolder(@NonNull ListImageHolder holder, int position) {
-        holder.mTvMessage.setText(mDataImages.get(position).getMessage());
+        DataImage dataImage = mDataImages.get(position);
+        holder.mTvMessage.setText(dataImage.getMessage());
         GridLayoutManager layoutManager;
-        ImageAdapter imageAdapter = new ImageAdapter(mContext, mDataImages.get(position).getImages());
-        switch (mDataImages.get(position).getPostType()) {
+        ImageAdapter imageAdapter = new ImageAdapter(mContext, dataImage.getImages());
+        switch (dataImage.getPostType()) {
             case "vuong2x1":
                 layoutManager = new GridLayoutManager(mContext, 2);
                 imageAdapter.setMaxSize(3);
@@ -98,11 +97,26 @@ public class ListImageAdapter extends RecyclerView.Adapter<ListImageAdapter.List
             holder.mTvMessage.setEnabled(false);
         });
         holder.mIvCopy.setOnClickListener(v -> {
-            ClipboardManager clipboard = (ClipboardManager)mContext.getSystemService(Context.CLIPBOARD_SERVICE);
+            ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
             ClipData clip = ClipData.newPlainText(holder.mTvMessage.getText(), holder.mTvMessage.getText());
             if (clipboard != null) {
                 clipboard.setPrimaryClip(clip);
                 Toast.makeText(mContext, "Copy thành công!", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        if (!dataImage.isDownload()) {
+            holder.mIvDownloadAlbum.reset();
+            Log.d("dataImage", position + ":::");
+        } else {
+            holder.mIvDownloadAlbum.end();
+        }
+        holder.mIvDownloadAlbum.setDownloadConfig(1000, 0.0, ENDownloadView.DownloadUnit.KB);
+        holder.mIvDownloadAlbum.setOnClickListener(v -> {
+            if (!dataImage.isDownload()) {
+                dataImage.setDownload(true);
+                holder.mIvDownloadAlbum.start();
+                DownloadControl.downloadFiles(mContext, dataImage.getImages());
             }
         });
         holder.mRcvImage.setAdapter(imageAdapter);
@@ -133,6 +147,7 @@ public class ListImageAdapter extends RecyclerView.Adapter<ListImageAdapter.List
         private ImageView mIvEditMessage;
         private ImageView mIvCopy;
         private ImageView mIvExpandLess;
+        private ENDownloadView mIvDownloadAlbum;
         private RecyclerView mRcvImage;
         private TableRow mTbControl2;
 
@@ -144,6 +159,8 @@ public class ListImageAdapter extends RecyclerView.Adapter<ListImageAdapter.List
             mIvCopy = itemView.findViewById(R.id.ivCopy);
             mIvExpandLess = itemView.findViewById(R.id.ivExpandLess);
             mTbControl2 = itemView.findViewById(R.id.tbControl2);
+            mIvDownloadAlbum = itemView.findViewById(R.id.ivDownloadAlbum);
+
         }
     }
 

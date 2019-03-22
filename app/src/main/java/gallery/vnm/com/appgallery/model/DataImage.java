@@ -24,6 +24,16 @@ public class DataImage {
     @Expose
     private String linkThumb;
 
+    private boolean isDownload = false;
+
+    public boolean isDownload() {
+        return isDownload;
+    }
+
+    public void setDownload(boolean download) {
+        isDownload = download;
+    }
+
     public String getMessage() {
         return message;
     }

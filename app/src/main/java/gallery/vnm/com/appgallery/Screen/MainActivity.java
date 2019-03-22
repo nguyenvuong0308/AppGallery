@@ -4,9 +4,13 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
+import android.widget.ImageView;
 
 import java.util.ArrayList;
 
@@ -33,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     private ContentLayoutContact.Presenter mContentLayoutPresenter;
     private DrawerLayoutAdapter mDrawerLayoutAdapter;
     private ListImageAdapter mListImageAdapter;
+    private ImageView mIvMenu;
+    private DrawerLayout mDrawerLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -43,7 +49,9 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
 
     private void init() {
         mRcvMenu = findViewById(R.id.rcvTest);
+        mIvMenu = findViewById(R.id.ivMenu);
         mRcvListImage = findViewById(R.id.rcvListImage);
+        mDrawerLayout = findViewById(R.id.drawerLayout);
         mDrawerLayoutPresenter = new DrawerLayoutPresenter(this, new RequestApiLocalTest());
         mContentLayoutPresenter = new ContentLayoutPresenter(this, new RequestApiLocalTest());
 
@@ -53,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         mRcvMenu.setHasFixedSize(true);
         mDrawerLayoutAdapter.setMenuOnItemClick((item, position) -> {
             mContentLayoutPresenter.loadListImage(this);
+            mDrawerLayout.closeDrawer(Gravity.START);
         });
 
         mListImageAdapter = new ListImageAdapter(this);
@@ -61,8 +70,19 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         mRcvListImage.setHasFixedSize(true);
         mListImageAdapter.setListImageOnclick((item, position) -> {
             replaceFragment(ShowImageFragment.newInstance(item, position));
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         });
         mDrawerLayoutPresenter.loadMenu(this);
+        mIvMenu.setOnClickListener(v -> {
+            mDrawerLayout.openDrawer(Gravity.START);
+        });
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
     }
 
     @Override
