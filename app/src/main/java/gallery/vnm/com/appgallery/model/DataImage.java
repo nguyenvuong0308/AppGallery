@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DataImage {
@@ -48,6 +49,13 @@ public class DataImage {
 
     public void setImages(ArrayList<String> images) {
         this.images = images;
+    }
+
+    public void setImages(String images[]) {
+        if (images != null && images.length > 0) {
+            this.images = new ArrayList<>();
+            this.images.addAll(Arrays.asList(images));
+        }
     }
 
     public String getPostType() {

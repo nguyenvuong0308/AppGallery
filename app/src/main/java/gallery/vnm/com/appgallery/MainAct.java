@@ -41,6 +41,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import gallery.vnm.com.appgallery.model.DataImage;
+import gallery.vnm.com.appgallery.model.Menu;
+import gallery.vnm.com.appgallery.model.network.ApiAdapter;
 import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
@@ -352,12 +355,14 @@ public class MainAct extends AppCompatActivity
          */
         private List<String> getDataFromApi() throws IOException {
             String spreadsheetId = "1e3U_GcoqpFxaNrpm5WQiGhb4wzNlwzi8QGfIWUzDsyM";
-            String range = "!A2:E";
+            String range = "Sheet1!A2:E";
             List<String> results = new ArrayList<>();
             ValueRange response = this.mService.spreadsheets().values()
                     .get(spreadsheetId, range)
                     .execute();
             List<List<Object>> values = response.getValues();
+            ArrayList<DataImage> dataImages = ApiAdapter.convertResponseDataSheetToDataImage(values);
+            ArrayList<Menu> menus = ApiAdapter.convertResponseDataSheetToDataMenu(values);
             if (values != null) {
                 results.add("Name, Major");
                 for (List row : values) {
