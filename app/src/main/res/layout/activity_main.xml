@@ -32,9 +32,9 @@
     </LinearLayout>
 
     <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawerLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/drawerLayout"
         tools:context="gallery.vnm.com.appgallery.Screen.MainActivity">
 
 
@@ -42,12 +42,24 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rcvListImage"
+            <android.support.v4.widget.SwipeRefreshLayout
+                android:id="@+id/sRLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                tools:listitem="@layout/item_list_image" />
+                android:layout_height="match_parent">
 
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rcvListImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    tools:listitem="@layout/item_list_image" />
+            </android.support.v4.widget.SwipeRefreshLayout>
+            <TextView
+                android:id="@+id/tvWarning"
+                android:textSize="14sp"
+                android:gravity="center"
+                android:textColor="@android:color/holo_red_dark"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
             <FrameLayout
                 android:id="@+id/content_frame"
                 android:layout_width="match_parent"

@@ -5,7 +5,6 @@ import android.accounts.AccountManager;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -31,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final int REQUEST_AUTHORIZATION = 1001;
     private static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
     private static final int REQUEST_PERMISSION_GET_ACCOUNTS = 1003;
+    private static final int REQUEST_PERMISSION_WRITE_EXTERNAL = 1004;
     private static final String[] SCOPES = {SheetsScopes.SPREADSHEETS_READONLY};
     private Button mBtnLoginByGoogle;
     private TextView mTvWarning;
@@ -44,15 +44,32 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initView() {
-        mBtnLoginByGoogle = findViewById(R.id.btnLoginByGoogle);
-        mTvWarning = findViewById(R.id.tvWarning);
-        mBtnLoginByGoogle.setOnClickListener(v -> {
-            loginByGoogle();
-        });
-        // Initialize credentials and service object.
-        mCredential = GoogleAccountCredential.usingOAuth2(
-                getApplicationContext(), Arrays.asList(SCOPES))
-                .setBackOff(new ExponentialBackOff());
+        if (!EasyPermissions.hasPermissions(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            EasyPermissions.requestPermissions(
+                    this,
+                    "This app needs to write external storage",
+                    REQUEST_PERMISSION_WRITE_EXTERNAL,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        if (AppPreference.getAccountName(this) != null) {
+            moveToMain();
+        } else {
+            mBtnLoginByGoogle = findViewById(R.id.btnLoginByGoogle);
+            mTvWarning = findViewById(R.id.tvWarning);
+            mBtnLoginByGoogle.setOnClickListener(v -> {
+                loginByGoogle();
+            });
+            // Initialize credentials and service object.
+            mCredential = GoogleAccountCredential.usingOAuth2(
+                    getApplicationContext(), Arrays.asList(SCOPES))
+                    .setBackOff(new ExponentialBackOff());
+        }
+    }
+
+    private void moveToMain() {
+        finish();
+        startActivity(new Intent(this, MainActivity.class));
     }
 
     private void loginByGoogle() {
@@ -63,8 +80,7 @@ public class LoginActivity extends AppCompatActivity {
         } else if (!isDeviceOnline()) {
             mTvWarning.setText("Không có kết nối internet!");
         } else {
-            startActivity(new Intent(this, MainActivity.class));
-            finish();
+            moveToMain();
         }
     }
 
@@ -205,6 +221,10 @@ public class LoginActivity extends AppCompatActivity {
                     loginByGoogle();
                 }
                 break;
+            case REQUEST_PERMISSION_WRITE_EXTERNAL:
+                if (resultCode != RESULT_OK) {
+                    finish();
+                }
         }
     }
 }

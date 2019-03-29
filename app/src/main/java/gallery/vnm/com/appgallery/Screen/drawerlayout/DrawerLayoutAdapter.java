@@ -18,6 +18,8 @@ public class DrawerLayoutAdapter extends RecyclerView.Adapter<DrawerLayoutAdapte
     private Context mContext;
     private ArrayList<Menu> mMenus;
     private OnItemClick<Menu> mMenuOnItemClick;
+    private Menu mMenuSelected;
+    private int positionSelected = -1;
 
     public DrawerLayoutAdapter(Context mContext, ArrayList<Menu> mMenus) {
         this.mContext = mContext;
@@ -39,8 +41,18 @@ public class DrawerLayoutAdapter extends RecyclerView.Adapter<DrawerLayoutAdapte
     @Override
     public void onBindViewHolder(@NonNull MenuHolder holder, int position) {
         holder.mTvMenu.setText(mMenus.get(position).getName());
+        if (position == positionSelected) {
+            holder.mTvMenu.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
+            holder.mTvMenu.setTextColor(mContext.getResources().getColor(R.color.white));
+        } else {
+            holder.mTvMenu.setBackgroundColor(mContext.getResources().getColor(R.color.white));
+            holder.mTvMenu.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
+        }
         holder.mTvMenu.setOnClickListener(v -> {
+            mMenuSelected = mMenus.get(position);
+            positionSelected = position;
             if (mMenuOnItemClick != null) mMenuOnItemClick.onClick(mMenus.get(position), position);
+            notifyDataSetChanged();
         });
 
     }
@@ -53,6 +65,10 @@ public class DrawerLayoutAdapter extends RecyclerView.Adapter<DrawerLayoutAdapte
     public void addMenus(ArrayList<Menu> menus) {
         mMenus.addAll(menus);
         notifyDataSetChanged();
+    }
+
+    public Menu getMenuSelected() {
+        return mMenuSelected;
     }
 
     public void setMenuOnItemClick(OnItemClick<Menu> mMenuOnItemClick) {

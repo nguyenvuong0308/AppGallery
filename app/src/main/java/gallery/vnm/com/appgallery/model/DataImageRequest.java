@@ -30,7 +30,8 @@ public class DataImageRequest {
         if (mKeyMenu == null || mKeyMenu.isEmpty()) {
             throw new Exception("Key menu khong the trong!");
         } else {
-            int positionStartPage = ((mPage - 1) * PAGE_SIZE) + 2;
+            boolean isFirstPage = ((mPage - 1) * PAGE_SIZE) == 0;
+            int positionStartPage = ((mPage - 1) * PAGE_SIZE) + 2 + (isFirstPage ? 0 : 1);
             int positionEndPage = (mPage * PAGE_SIZE) + 2;
             return mKeyMenu + "!A" + positionStartPage + ":" + "E" + positionEndPage;
         }
