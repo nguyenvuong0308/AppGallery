@@ -1,5 +1,6 @@
 package gallery.vnm.com.appgallery.Screen;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,9 +13,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.widget.ImageView;
 
-import java.util.ArrayList;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.sheets.v4.SheetsScopes;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import gallery.vnm.com.appgallery.AppPreference;
 import gallery.vnm.com.appgallery.ListImageAdapter;
+import gallery.vnm.com.appgallery.LoginActivity;
 import gallery.vnm.com.appgallery.R;
 import gallery.vnm.com.appgallery.Screen.drawerlayout.ContentLayoutContact;
 import gallery.vnm.com.appgallery.Screen.drawerlayout.ContentLayoutPresenter;
@@ -25,6 +33,7 @@ import gallery.vnm.com.appgallery.model.ApiException;
 import gallery.vnm.com.appgallery.model.DataImage;
 import gallery.vnm.com.appgallery.model.Menu;
 import gallery.vnm.com.appgallery.model.network.RequestApiLocalTest;
+import gallery.vnm.com.appgallery.model.network.RequestApiNetwork;
 
 /**
  * Created by nguye on 3/6/2019.
@@ -39,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     private ListImageAdapter mListImageAdapter;
     private ImageView mIvMenu;
     private DrawerLayout mDrawerLayout;
+    private GoogleAccountCredential mCredential;
+    private static final String[] SCOPES = { SheetsScopes.SPREADSHEETS_READONLY };
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,19 +60,29 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     }
 
     private void init() {
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                getApplicationContext(), Arrays.asList(SCOPES))
+                .setBackOff(new ExponentialBackOff());
+        String accountName = AppPreference.getAccountName(this);
+        if ( accountName == null) {
+            startActivity(new Intent(this, LoginActivity.class));
+            finish();
+        } else {
+            mCredential.setSelectedAccountName(accountName);
+        }
         mRcvMenu = findViewById(R.id.rcvTest);
         mIvMenu = findViewById(R.id.ivMenu);
         mRcvListImage = findViewById(R.id.rcvListImage);
         mDrawerLayout = findViewById(R.id.drawerLayout);
-        mDrawerLayoutPresenter = new DrawerLayoutPresenter(this, new RequestApiLocalTest());
-        mContentLayoutPresenter = new ContentLayoutPresenter(this, new RequestApiLocalTest());
+        mDrawerLayoutPresenter = new DrawerLayoutPresenter(this, new RequestApiNetwork(mCredential));
+        mContentLayoutPresenter = new ContentLayoutPresenter(this, new RequestApiNetwork(mCredential));
 
         mDrawerLayoutAdapter = new DrawerLayoutAdapter(this);
         mRcvMenu.setAdapter(mDrawerLayoutAdapter);
         mRcvMenu.setLayoutManager(new LinearLayoutManager(this));
         mRcvMenu.setHasFixedSize(true);
         mDrawerLayoutAdapter.setMenuOnItemClick((item, position) -> {
-            mContentLayoutPresenter.loadListImage(this);
+            mContentLayoutPresenter.loadListImage(this, item.getName());
             mDrawerLayout.closeDrawer(Gravity.START);
         });
 
@@ -76,7 +98,6 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         mIvMenu.setOnClickListener(v -> {
             mDrawerLayout.openDrawer(Gravity.START);
         });
-
     }
 
     @Override

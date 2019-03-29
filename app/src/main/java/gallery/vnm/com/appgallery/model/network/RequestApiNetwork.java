@@ -49,23 +49,28 @@ public class RequestApiNetwork implements RequestAPI {
 
     @Override
     public void loadImages(DataImageRequest imageRequest, ApiCallBack<DataImagesResponse> apiCallBack) {
-        MakeRequestTask makeRequestTask = new MakeRequestTask(mCredential, new SheetCallBack() {
-            @Override
-            public void onBeforeRequest() {
-                apiCallBack.onBeforeRequest();
-            }
+        MakeRequestTask makeRequestTask = null;
+        try {
+            makeRequestTask = new MakeRequestTask(mCredential, new SheetCallBack() {
+                @Override
+                public void onBeforeRequest() {
+                    apiCallBack.onBeforeRequest();
+                }
 
-            @Override
-            public void onSuccess(List<List<Object>> response) {
-                apiCallBack.onSuccess(ApiAdapter.convertResponseDataSheetToDataImage(response));
-            }
+                @Override
+                public void onSuccess(List<List<Object>> response) {
+                    apiCallBack.onSuccess(ApiAdapter.convertResponseDataSheetToDataImage(response));
+                }
 
-            @Override
-            public void onError(Exception e) {
-                apiCallBack.onFail(e);
-            }
-        }, imageRequest.getKeyMenu());
-        makeRequestTask.execute();
+                @Override
+                public void onError(Exception e) {
+                    apiCallBack.onFail(e);
+                }
+            }, imageRequest.getRange());
+            makeRequestTask.execute();
+        } catch (Exception e) {
+            apiCallBack.onFail(e);
+        }
     }
 
 

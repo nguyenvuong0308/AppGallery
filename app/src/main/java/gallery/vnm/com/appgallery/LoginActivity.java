@@ -64,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
             mTvWarning.setText("Không có kết nối internet!");
         } else {
             startActivity(new Intent(this, MainActivity.class));
+            finish();
         }
     }
 

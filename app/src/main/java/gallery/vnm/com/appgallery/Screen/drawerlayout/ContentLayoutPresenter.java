@@ -5,7 +5,6 @@ import android.arch.lifecycle.LifecycleOwner;
 import java.util.ArrayList;
 
 import gallery.vnm.com.appgallery.model.ApiCallBack;
-import gallery.vnm.com.appgallery.model.ApiException;
 import gallery.vnm.com.appgallery.model.DataImage;
 import gallery.vnm.com.appgallery.model.DataImageRequest;
 import gallery.vnm.com.appgallery.model.DataImagesResponse;
@@ -16,6 +15,8 @@ public class ContentLayoutPresenter implements ContentLayoutContact.Presenter {
     private ContentLayoutContact.View mView;
     private RequestAPI mRequestAPI;
     private ArrayList<DataImage> mDataImages = new ArrayList<>();
+    private String mAlbumName;
+    private int mPage = 1;
 
     public ContentLayoutPresenter(ContentLayoutContact.View mView, RequestAPI mRequestAPI) {
         this.mView = mView;
@@ -23,8 +24,14 @@ public class ContentLayoutPresenter implements ContentLayoutContact.Presenter {
     }
 
     @Override
-    public void loadListImage(LifecycleOwner owner) {
-        mRequestAPI.loadImages(new DataImageRequest(), new ApiCallBack<>(owner, new IApiCallBack<DataImagesResponse>() {
+    public void loadListImage(LifecycleOwner owner, String albumName) {
+        if (mAlbumName == null || !mAlbumName.equals(albumName)) {
+            mAlbumName = albumName;
+            mPage = 1;
+        } else {
+            mPage ++;
+        }
+        mRequestAPI.loadImages(createDataImageRequest(mAlbumName, mPage), new ApiCallBack<>(owner, new IApiCallBack<DataImagesResponse>() {
             @Override
             public void onBeforeRequest() {
                 mView.onBeforeLoadListImage();
@@ -41,5 +48,12 @@ public class ContentLayoutPresenter implements ContentLayoutContact.Presenter {
                 mView.onError(throwable);
             }
         }));
+    }
+
+    private DataImageRequest createDataImageRequest(String albumName, int mPage) {
+        DataImageRequest request = new DataImageRequest();
+        request.setKeyMenu(albumName);
+        request.setPage(mPage);
+        return request;
     }
 }

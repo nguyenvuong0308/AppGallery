@@ -2,6 +2,8 @@ package gallery.vnm.com.appgallery.model;
 
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.MutableLiveData;
+import android.os.Handler;
+import android.os.Looper;
 
 public class ApiCallBack<T> implements IApiCallBack<T> {
     private MutableLiveData<StatusCallBack> callBackLiveData = new MutableLiveData<>();
@@ -41,7 +43,9 @@ public class ApiCallBack<T> implements IApiCallBack<T> {
     @Override
     public void onFail(Exception throwable) {
         mThrowable = throwable;
-        callBackLiveData.setValue(StatusCallBack.STATUS_FAIL);
+        new Handler(Looper.getMainLooper()).post(() -> {
+            callBackLiveData.setValue(StatusCallBack.STATUS_FAIL);
+        });
     }
 
 

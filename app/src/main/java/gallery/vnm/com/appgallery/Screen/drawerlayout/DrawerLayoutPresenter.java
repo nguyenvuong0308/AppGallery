@@ -24,7 +24,7 @@ public class DrawerLayoutPresenter implements DrawerLayoutContract.Presenter {
 
     @Override
     public void loadMenu(LifecycleOwner owner) {
-        mRequestAPI.loadMenus(new MenuRequest(), new ApiCallBack<>(owner, new IApiCallBack<MenusResponse>() {
+        mRequestAPI.loadMenus(getMenuRequest(), new ApiCallBack<>(owner, new IApiCallBack<MenusResponse>() {
             @Override
             public void onBeforeRequest() {
                 mView.onBeforeLoadMenu();
@@ -41,5 +41,11 @@ public class DrawerLayoutPresenter implements DrawerLayoutContract.Presenter {
                 mView.onError(throwable);
             }
         }));
+    }
+
+    private MenuRequest getMenuRequest() {
+        MenuRequest request = new MenuRequest();
+        request.setKey("Menu Album!A2:A");
+        return request;
     }
 }
