@@ -17,6 +17,6 @@ public class DrawerLayoutContract {
 
         void onBeforeLoadMenu();
 
-        void onError(ApiException throwable);
+        void onError(Exception throwable);
     }
 }

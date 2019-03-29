@@ -37,7 +37,7 @@ public class ContentLayoutPresenter implements ContentLayoutContact.Presenter {
             }
 
             @Override
-            public void onFail(ApiException throwable) {
+            public void onFail(Exception throwable) {
                 mView.onError(throwable);
             }
         }));

@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     }
 
     @Override
-    public void onError(ApiException throwable) {
+    public void onError(Exception throwable) {
 
     }
 

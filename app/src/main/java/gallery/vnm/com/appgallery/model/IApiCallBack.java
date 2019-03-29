@@ -5,5 +5,5 @@ public interface IApiCallBack<T> {
 
     void onSuccess(T response);
 
-    void onFail(ApiException throwable);
+    void onFail(Exception throwable);
 }

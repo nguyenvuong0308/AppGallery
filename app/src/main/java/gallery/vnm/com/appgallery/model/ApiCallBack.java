@@ -6,7 +6,7 @@ import android.arch.lifecycle.MutableLiveData;
 public class ApiCallBack<T> implements IApiCallBack<T> {
     private MutableLiveData<StatusCallBack> callBackLiveData = new MutableLiveData<>();
     private T mResponseSuccess;
-    private ApiException mThrowable;
+    private Exception mThrowable;
 
     public ApiCallBack(LifecycleOwner lifecycleOwner, IApiCallBack<T> apiCallBackWithResponse) {
         callBackLiveData.observe(lifecycleOwner, statusCallBack -> {
@@ -39,7 +39,7 @@ public class ApiCallBack<T> implements IApiCallBack<T> {
     }
 
     @Override
-    public void onFail(ApiException throwable) {
+    public void onFail(Exception throwable) {
         mThrowable = throwable;
         callBackLiveData.setValue(StatusCallBack.STATUS_FAIL);
     }

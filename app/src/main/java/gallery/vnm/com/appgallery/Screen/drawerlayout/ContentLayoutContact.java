@@ -17,6 +17,6 @@ public class ContentLayoutContact {
 
         void onBeforeLoadListImage();
 
-        void onError(ApiException throwable);
+        void onError(Exception throwable);
     }
 }

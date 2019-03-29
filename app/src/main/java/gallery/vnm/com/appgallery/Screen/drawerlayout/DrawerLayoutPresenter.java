@@ -37,7 +37,7 @@ public class DrawerLayoutPresenter implements DrawerLayoutContract.Presenter {
             }
 
             @Override
-            public void onFail(ApiException throwable) {
+            public void onFail(Exception throwable) {
                 mView.onError(throwable);
             }
         }));
