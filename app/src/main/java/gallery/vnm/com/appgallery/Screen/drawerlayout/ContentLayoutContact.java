@@ -9,7 +9,7 @@ import gallery.vnm.com.appgallery.model.DataImage;
 
 public class ContentLayoutContact {
     public interface Presenter {
-        void refresh(LifecycleOwner owner, String albumName);
+        void refresh(LifecycleOwner owner, String albumId);
 
         void loadMore(LifecycleOwner owner);
 

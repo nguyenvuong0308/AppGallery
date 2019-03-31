@@ -16,8 +16,8 @@ import java.util.List;
 import gallery.vnm.com.appgallery.model.ApiCallBack;
 import gallery.vnm.com.appgallery.model.DataImageRequest;
 import gallery.vnm.com.appgallery.model.DataImagesResponse;
-import gallery.vnm.com.appgallery.model.MenuRequest;
-import gallery.vnm.com.appgallery.model.MenusResponse;
+import gallery.vnm.com.appgallery.model.AlbumRequest;
+import gallery.vnm.com.appgallery.model.AlbumResponse;
 
 public class RequestApiNetwork implements RequestAPI {
     private GoogleAccountCredential mCredential;
@@ -27,7 +27,7 @@ public class RequestApiNetwork implements RequestAPI {
     }
 
     @Override
-    public void loadMenus(MenuRequest menuRequest, ApiCallBack<MenusResponse> apiCallBack) {
+    public void loadMenus(AlbumRequest albumRequest, ApiCallBack<AlbumResponse> apiCallBack) {
         MakeRequestTask makeRequestTask = new MakeRequestTask(mCredential, new SheetCallBack() {
             @Override
             public void onBeforeRequest() {
@@ -43,7 +43,7 @@ public class RequestApiNetwork implements RequestAPI {
             public void onError(Exception e) {
                 apiCallBack.onFail(e);
             }
-        }, menuRequest.getKey());
+        }, albumRequest.getKey());
         makeRequestTask.execute();
     }
 

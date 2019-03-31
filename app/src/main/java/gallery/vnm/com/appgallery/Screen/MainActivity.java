@@ -1,6 +1,7 @@
 package gallery.vnm.com.appgallery.Screen;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.SpannableString;
+import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -36,8 +39,8 @@ import gallery.vnm.com.appgallery.Screen.drawerlayout.ContentLayoutPresenter;
 import gallery.vnm.com.appgallery.Screen.drawerlayout.DrawerLayoutAdapter;
 import gallery.vnm.com.appgallery.Screen.drawerlayout.DrawerLayoutContract;
 import gallery.vnm.com.appgallery.Screen.drawerlayout.DrawerLayoutPresenter;
+import gallery.vnm.com.appgallery.model.Album;
 import gallery.vnm.com.appgallery.model.DataImage;
-import gallery.vnm.com.appgallery.model.Menu;
 import gallery.vnm.com.appgallery.model.network.RequestApiNetwork;
 
 /**
@@ -55,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     private ListImageAdapter mListImageAdapter;
     private ImageView mIvMenu;
     private TextView mTvWarning;
+    private TextView mTvUpdateRequired;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private DrawerLayout mDrawerLayout;
     private GoogleAccountCredential mCredential;
@@ -81,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         mSwipeRefreshLayout = findViewById(R.id.sRLayout);
         mIvMenu = findViewById(R.id.ivMenu);
         mTvWarning = findViewById(R.id.tvWarning);
+        mTvUpdateRequired = findViewById(R.id.tvUpdateRequired);
         mRcvListImage = findViewById(R.id.rcvListImage);
         mDrawerLayout = findViewById(R.id.drawerLayout);
         mDrawerLayoutPresenter = new DrawerLayoutPresenter(this, new RequestApiNetwork(mCredential));
@@ -90,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         mRcvMenu.setLayoutManager(new LinearLayoutManager(this));
         mRcvMenu.setHasFixedSize(true);
         mDrawerLayoutAdapter.setMenuOnItemClick((item, position) -> {
-            mContentLayoutPresenter.refresh(this, item.getName());
+            mContentLayoutPresenter.refresh(this, item.getAlbumId());
             mDrawerLayout.closeDrawer(Gravity.START);
         });
 
@@ -102,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
             replaceFragment(ShowImageFragment.newInstance(item, position));
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         });
-        mDrawerLayoutPresenter.loadMenu(this);
+        mDrawerLayoutPresenter.loadAlbums(this);
         mIvMenu.setOnClickListener(v -> {
             if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
                 mDrawerLayout.closeDrawer(Gravity.START);
@@ -117,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             if (mDrawerLayoutAdapter.getMenuSelected() != null) {
-                mContentLayoutPresenter.refresh(this, mDrawerLayoutAdapter.getMenuSelected().getName());
+                mContentLayoutPresenter.refresh(this, mDrawerLayoutAdapter.getMenuSelected().getAlbumId());
             } else {
                 Toast.makeText(this, "Chưa chọn album!", Toast.LENGTH_LONG).show();
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -156,8 +161,8 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     }
 
     @Override
-    public void onLoadMenu(ArrayList<Menu> mMenus) {
-        mDrawerLayoutAdapter.addMenus(mMenus);
+    public void onLoadAlbums(ArrayList<Album> mAlbums) {
+        mDrawerLayoutAdapter.addMenus(mAlbums);
     }
 
     @Override
@@ -195,10 +200,27 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
                     REQUEST_AUTHORIZATION);
             return;
         }
-
         mTvWarning.setText("Có lỗi xảy ra!\n" + throwable.getMessage());
         mListImageAdapter.refreshData(null);
         mSwipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public void onSelectedAlbum(Album album) {
+        mContentLayoutPresenter.refresh(this, album.getAlbumId());
+        mDrawerLayoutAdapter.setAlbumSelected(album);
+    }
+
+    @Override
+    public void onUpdateRequired(String extendData) {
+        String titleUpdate = "Update Required";
+        SpannableString content = new SpannableString(titleUpdate);
+        content.setSpan(new UnderlineSpan(), 0, titleUpdate.length(), 0);
+        mTvUpdateRequired.setText(content);
+        mTvUpdateRequired.setOnClickListener(view -> {
+            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(extendData));
+            startActivity(browserIntent);
+        });
     }
 
     public void replaceFragment(Fragment fragment) {

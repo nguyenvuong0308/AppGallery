@@ -1,34 +1,32 @@
 package gallery.vnm.com.appgallery.model;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 public class DataImage {
 
-    @SerializedName("message")
-    @Expose
+    private String id;
     private String message;
-    @SerializedName("images")
-    @Expose
     private ArrayList<String> images = null;
-    @SerializedName("post_type")
-    @Expose
     private String postType;
-    @SerializedName("Video")
-    @Expose
     private String video;
-    @SerializedName("Link_thumb")
-    @Expose
-    private String linkThumb;
+    private EnumFlag flag;
+    private String tag;
+    private String hint;
+    private String videoThumb;
 
     private boolean isDownload = false;
 
     public boolean isDownload() {
         return isDownload;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public void setDownload(boolean download) {
@@ -74,12 +72,35 @@ public class DataImage {
         this.video = video;
     }
 
-    public String getLinkThumb() {
-        return linkThumb;
+    public EnumFlag getFlag() {
+        return flag;
     }
 
-    public void setLinkThumb(String linkThumb) {
-        this.linkThumb = linkThumb;
+    public void setFlag(EnumFlag flag) {
+        this.flag = flag;
     }
 
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getHint() {
+        return hint;
+    }
+
+    public void setHint(String hint) {
+        this.hint = hint;
+    }
+
+    public String getVideoThumb() {
+        return videoThumb;
+    }
+
+    public void setVideoThumb(String videoThumb) {
+        this.videoThumb = videoThumb;
+    }
 }
