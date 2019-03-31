@@ -6,4 +6,4 @@
     android:padding="5dp"
     android:text="@string/app_name"
     android:textColor="@color/colorPrimary"
-    android:textSize="18sp" />
+    android:textSize="@dimen/text_size_huge" />

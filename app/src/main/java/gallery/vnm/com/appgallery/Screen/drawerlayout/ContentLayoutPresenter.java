@@ -11,7 +11,7 @@ import gallery.vnm.com.appgallery.model.network.RequestAPI;
 public class ContentLayoutPresenter implements ContentLayoutContact.Presenter {
     private ContentLayoutContact.View mView;
     private RequestAPI mRequestAPI;
-    private String mAlbumName;
+    private String mAlbumID;
     private int mPage = 0;
     private DataImageRequest mDataImageRequest;
 
@@ -21,10 +21,10 @@ public class ContentLayoutPresenter implements ContentLayoutContact.Presenter {
     }
 
     @Override
-    public void refresh(LifecycleOwner owner, String albumName) {
-        mAlbumName = albumName;
+    public void refresh(LifecycleOwner owner, String albumId) {
+        mAlbumID = albumId;
         mPage = 1;
-        mRequestAPI.loadImages(createDataImageRequest(mAlbumName, mPage), new ApiCallBack<>(owner, new IApiCallBack<DataImagesResponse>() {
+        mRequestAPI.loadImages(createDataImageRequest(mAlbumID, mPage), new ApiCallBack<>(owner, new IApiCallBack<DataImagesResponse>() {
             @Override
             public void onBeforeRequest() {
                 mView.onBeforeLoadListImage();
@@ -44,9 +44,9 @@ public class ContentLayoutPresenter implements ContentLayoutContact.Presenter {
 
     @Override
     public void loadMore(LifecycleOwner owner) {
-        if (mAlbumName != null) {
+        if (mAlbumID != null) {
             mPage++;
-            mRequestAPI.loadImages(createDataImageRequest(mAlbumName, mPage), new ApiCallBack<>(owner, new IApiCallBack<DataImagesResponse>() {
+            mRequestAPI.loadImages(createDataImageRequest(mAlbumID, mPage), new ApiCallBack<>(owner, new IApiCallBack<DataImagesResponse>() {
                 @Override
                 public void onBeforeRequest() {
                     mView.onBeforeLoadListImage();
@@ -92,9 +92,9 @@ public class ContentLayoutPresenter implements ContentLayoutContact.Presenter {
         }
     }
 
-    private DataImageRequest createDataImageRequest(String albumName, int mPage) {
+    private DataImageRequest createDataImageRequest(String albumId, int mPage) {
         DataImageRequest request = new DataImageRequest();
-        request.setKeyMenu(albumName);
+        request.setAlbumId(albumId);
         request.setPage(mPage);
         mDataImageRequest = request;
         return request;

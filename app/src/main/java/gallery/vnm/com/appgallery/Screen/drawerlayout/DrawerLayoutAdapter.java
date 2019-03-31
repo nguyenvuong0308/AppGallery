@@ -12,23 +12,23 @@ import java.util.ArrayList;
 
 import gallery.vnm.com.appgallery.OnItemClick;
 import gallery.vnm.com.appgallery.R;
-import gallery.vnm.com.appgallery.model.Menu;
+import gallery.vnm.com.appgallery.model.Album;
 
 public class DrawerLayoutAdapter extends RecyclerView.Adapter<DrawerLayoutAdapter.MenuHolder> {
     private Context mContext;
-    private ArrayList<Menu> mMenus;
-    private OnItemClick<Menu> mMenuOnItemClick;
-    private Menu mMenuSelected;
+    private ArrayList<Album> mAlbums;
+    private OnItemClick<Album> mMenuOnItemClick;
+    private Album mAlbumSelected;
     private int positionSelected = -1;
 
-    public DrawerLayoutAdapter(Context mContext, ArrayList<Menu> mMenus) {
+    public DrawerLayoutAdapter(Context mContext, ArrayList<Album> mAlbums) {
         this.mContext = mContext;
-        this.mMenus = mMenus;
+        this.mAlbums = mAlbums;
     }
 
     public DrawerLayoutAdapter(Context mContext) {
         this.mContext = mContext;
-        mMenus = new ArrayList<>();
+        mAlbums = new ArrayList<>();
     }
 
     @NonNull
@@ -40,7 +40,7 @@ public class DrawerLayoutAdapter extends RecyclerView.Adapter<DrawerLayoutAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MenuHolder holder, int position) {
-        holder.mTvMenu.setText(mMenus.get(position).getName());
+        holder.mTvMenu.setText(mAlbums.get(position).getAlbumName());
         if (position == positionSelected) {
             holder.mTvMenu.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
             holder.mTvMenu.setTextColor(mContext.getResources().getColor(R.color.white));
@@ -49,9 +49,9 @@ public class DrawerLayoutAdapter extends RecyclerView.Adapter<DrawerLayoutAdapte
             holder.mTvMenu.setTextColor(mContext.getResources().getColor(R.color.colorPrimary));
         }
         holder.mTvMenu.setOnClickListener(v -> {
-            mMenuSelected = mMenus.get(position);
+            mAlbumSelected = mAlbums.get(position);
             positionSelected = position;
-            if (mMenuOnItemClick != null) mMenuOnItemClick.onClick(mMenus.get(position), position);
+            if (mMenuOnItemClick != null) mMenuOnItemClick.onClick(mAlbums.get(position), position);
             notifyDataSetChanged();
         });
 
@@ -59,20 +59,24 @@ public class DrawerLayoutAdapter extends RecyclerView.Adapter<DrawerLayoutAdapte
 
     @Override
     public int getItemCount() {
-        return mMenus.size();
+        return mAlbums.size();
     }
 
-    public void addMenus(ArrayList<Menu> menus) {
-        mMenus.addAll(menus);
+    public void addMenus(ArrayList<Album> albums) {
+        mAlbums.addAll(albums);
         notifyDataSetChanged();
     }
 
-    public Menu getMenuSelected() {
-        return mMenuSelected;
+    public Album getMenuSelected() {
+        return mAlbumSelected;
     }
 
-    public void setMenuOnItemClick(OnItemClick<Menu> mMenuOnItemClick) {
+    public void setMenuOnItemClick(OnItemClick<Album> mMenuOnItemClick) {
         this.mMenuOnItemClick = mMenuOnItemClick;
+    }
+
+    public void setAlbumSelected(Album album) {
+        mAlbumSelected = album;
     }
 
     class MenuHolder extends RecyclerView.ViewHolder {

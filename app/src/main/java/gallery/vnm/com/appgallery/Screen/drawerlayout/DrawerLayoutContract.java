@@ -4,22 +4,24 @@ import android.arch.lifecycle.LifecycleOwner;
 
 import java.util.ArrayList;
 
-import gallery.vnm.com.appgallery.Screen.MainActivity;
-import gallery.vnm.com.appgallery.model.ApiException;
-import gallery.vnm.com.appgallery.model.Menu;
+import gallery.vnm.com.appgallery.model.Album;
 
 public class DrawerLayoutContract {
     public interface Presenter {
-        void loadMenu(LifecycleOwner owner);
+        void loadAlbums(LifecycleOwner owner);
 
         void tryReload(LifecycleOwner owner);
     }
 
     public interface View {
-        void onLoadMenu(ArrayList<Menu> mMenus);
+        void onLoadAlbums(ArrayList<Album> mAlbums);
 
         void onBeforeLoadMenu();
 
         void onError(Exception throwable);
+
+        void onSelectedAlbum(Album album);
+
+        void onUpdateRequired(String extendData);
     }
 }

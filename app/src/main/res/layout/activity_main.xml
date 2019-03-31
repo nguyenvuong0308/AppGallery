@@ -51,15 +51,19 @@
                     android:id="@+id/rcvListImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
+                    android:background="@color/color_decorator_image"
+                    android:padding="1.5dp"
                     tools:listitem="@layout/item_list_image" />
             </android.support.v4.widget.SwipeRefreshLayout>
+
             <TextView
                 android:id="@+id/tvWarning"
-                android:textSize="14sp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textColor="@android:color/holo_red_dark"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textSize="14sp" />
+
             <FrameLayout
                 android:id="@+id/content_frame"
                 android:layout_width="match_parent"
@@ -70,17 +74,38 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            android:background="@color/white"
             android:orientation="vertical">
 
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/rcvTest"
-                android:layout_width="240dp"
-                android:layout_height="match_parent"
-                android:background="#ffffff"
-                android:choiceMode="singleChoice"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="0dp"
-                tools:listitem="@layout/item_tv" />
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rcvTest"
+                        android:layout_width="240dp"
+                        android:layout_height="wrap_content"
+                        android:background="#ffffff"
+                        android:choiceMode="singleChoice"
+                        android:divider="@android:color/transparent"
+                        android:dividerHeight="0dp"
+                        tools:listitem="@layout/item_tv" />
+
+                    <TextView
+                        android:id="@+id/tvUpdateRequired"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:textColor="@color/colorPrimary"
+                        android:textSize="@dimen/text_size_huge" />
+                </LinearLayout>
+
+            </ScrollView>
         </LinearLayout>
 
     </android.support.v4.widget.DrawerLayout>

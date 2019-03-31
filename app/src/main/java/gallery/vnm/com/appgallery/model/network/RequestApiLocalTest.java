@@ -7,12 +7,12 @@ import com.google.gson.Gson;
 import gallery.vnm.com.appgallery.model.ApiCallBack;
 import gallery.vnm.com.appgallery.model.DataImageRequest;
 import gallery.vnm.com.appgallery.model.DataImagesResponse;
-import gallery.vnm.com.appgallery.model.MenuRequest;
-import gallery.vnm.com.appgallery.model.MenusResponse;
+import gallery.vnm.com.appgallery.model.AlbumRequest;
+import gallery.vnm.com.appgallery.model.AlbumResponse;
 
 public class RequestApiLocalTest implements RequestAPI {
     @Override
-    public void loadMenus(MenuRequest menuRequest, ApiCallBack<MenusResponse> apiCallBack) {
+    public void loadMenus(AlbumRequest albumRequest, ApiCallBack<AlbumResponse> apiCallBack) {
         String jsonMenusTest = "{\n" +
                 "  \"menus\": [\n" +
                 "    {\n" +
@@ -30,7 +30,7 @@ public class RequestApiLocalTest implements RequestAPI {
                 "  ]\n" +
                 "}";
         apiCallBack.onBeforeRequest();
-        new Handler().postDelayed(() -> apiCallBack.onSuccess(new Gson().fromJson(jsonMenusTest, MenusResponse.class)), 1000);
+        new Handler().postDelayed(() -> apiCallBack.onSuccess(new Gson().fromJson(jsonMenusTest, AlbumResponse.class)), 1000);
     }
 
     @Override
