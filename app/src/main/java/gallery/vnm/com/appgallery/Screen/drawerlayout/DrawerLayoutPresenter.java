@@ -16,6 +16,8 @@ public class DrawerLayoutPresenter implements DrawerLayoutContract.Presenter {
     private RequestAPI mRequestAPI;
     private DrawerLayoutContract.View mView;
     private ArrayList<Menu> mMenus = new ArrayList<>();
+    private MenuRequest mMenuRequest;
+
 
     public DrawerLayoutPresenter(DrawerLayoutContract.View view, RequestAPI requestAPI) {
         this.mRequestAPI = requestAPI;
@@ -32,6 +34,7 @@ public class DrawerLayoutPresenter implements DrawerLayoutContract.Presenter {
 
             @Override
             public void onSuccess(MenusResponse response) {
+                mMenuRequest = null;
                 mMenus.addAll(response.getMenus());
                 mView.onLoadMenu(mMenus);
             }
@@ -43,9 +46,34 @@ public class DrawerLayoutPresenter implements DrawerLayoutContract.Presenter {
         }));
     }
 
+    @Override
+    public void tryReload(LifecycleOwner owner) {
+        if (mMenuRequest != null ) {
+            mRequestAPI.loadMenus(mMenuRequest, new ApiCallBack<>(owner, new IApiCallBack<MenusResponse>() {
+                @Override
+                public void onBeforeRequest() {
+                    mView.onBeforeLoadMenu();
+                }
+
+                @Override
+                public void onSuccess(MenusResponse response) {
+                    mMenuRequest = null;
+                    mMenus.addAll(response.getMenus());
+                    mView.onLoadMenu(mMenus);
+                }
+
+                @Override
+                public void onFail(Exception throwable) {
+                    mView.onError(throwable);
+                }
+            }));
+        }
+    }
+
     private MenuRequest getMenuRequest() {
         MenuRequest request = new MenuRequest();
         request.setKey("Menu Album!A2:A");
+        mMenuRequest = request;
         return request;
     }
 }

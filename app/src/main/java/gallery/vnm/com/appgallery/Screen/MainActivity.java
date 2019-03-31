@@ -1,6 +1,5 @@
 package gallery.vnm.com.appgallery.Screen;
 
-import android.animation.StateListAnimator;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.googleapis.extensions.android.gms.auth.UserRecoverableAuthIOException;
 import com.google.api.client.util.ExponentialBackOff;
 import com.google.api.services.sheets.v4.SheetsScopes;
 
@@ -46,6 +46,7 @@ import gallery.vnm.com.appgallery.model.network.RequestApiNetwork;
 
 public class MainActivity extends AppCompatActivity implements DrawerLayoutContract.View, ContentLayoutContact.View {
     private static final String[] SCOPES = {SheetsScopes.SPREADSHEETS_READONLY};
+    private static final int REQUEST_AUTHORIZATION = 12345;
     private RecyclerView mRcvMenu;
     private RecyclerView mRcvListImage;
     private DrawerLayoutContract.Presenter mDrawerLayoutPresenter;
@@ -103,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         });
         mDrawerLayoutPresenter.loadMenu(this);
         mIvMenu.setOnClickListener(v -> {
-            if(mDrawerLayout.isDrawerOpen(Gravity.START)) {
+            if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
                 mDrawerLayout.closeDrawer(Gravity.START);
             } else {
                 mDrawerLayout.openDrawer(Gravity.START);
@@ -188,6 +189,13 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
 
     @Override
     public void onError(Exception throwable) {
+        if (throwable instanceof UserRecoverableAuthIOException) {
+            startActivityForResult(
+                    ((UserRecoverableAuthIOException) throwable).getIntent(),
+                    REQUEST_AUTHORIZATION);
+            return;
+        }
+
         mTvWarning.setText("Có lỗi xảy ra!\n" + throwable.getMessage());
         mListImageAdapter.refreshData(null);
         mSwipeRefreshLayout.setRefreshing(false);
@@ -199,5 +207,19 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         transaction.replace(R.id.content_frame, fragment);
         transaction.addToBackStack(fragment.getClass().getSimpleName());
         transaction.commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case REQUEST_AUTHORIZATION: {
+                if (resultCode == RESULT_OK) {
+                    mContentLayoutPresenter.tryReload(this);
+                    mDrawerLayoutPresenter.tryReload(this);
+                }
+            }
+            break;
+        }
     }
 }

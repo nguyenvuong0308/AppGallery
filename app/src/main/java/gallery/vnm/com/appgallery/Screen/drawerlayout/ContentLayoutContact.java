@@ -13,6 +13,7 @@ public class ContentLayoutContact {
 
         void loadMore(LifecycleOwner owner);
 
+        void tryReload(LifecycleOwner owner);
     }
 
     public interface View {

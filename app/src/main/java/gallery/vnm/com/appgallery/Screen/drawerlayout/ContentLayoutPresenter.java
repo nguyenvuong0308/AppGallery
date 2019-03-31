@@ -13,6 +13,7 @@ public class ContentLayoutPresenter implements ContentLayoutContact.Presenter {
     private RequestAPI mRequestAPI;
     private String mAlbumName;
     private int mPage = 0;
+    private DataImageRequest mDataImageRequest;
 
     public ContentLayoutPresenter(ContentLayoutContact.View mView, RequestAPI mRequestAPI) {
         this.mView = mView;
@@ -64,10 +65,38 @@ public class ContentLayoutPresenter implements ContentLayoutContact.Presenter {
         }
     }
 
+    @Override
+    public void tryReload(LifecycleOwner owner) {
+        if (mDataImageRequest != null) {
+            mRequestAPI.loadImages(mDataImageRequest, new ApiCallBack<>(owner, new IApiCallBack<DataImagesResponse>() {
+                @Override
+                public void onBeforeRequest() {
+                    mView.onBeforeLoadListImage();
+                }
+
+                @Override
+                public void onSuccess(DataImagesResponse response) {
+                    mDataImageRequest = null;
+                    if (mPage == 1) {
+                        mView.onLoadListImage(response.getData());
+                    } else {
+                        mView.onLoadMore(response.getData());
+                    }
+                }
+
+                @Override
+                public void onFail(Exception throwable) {
+                    mView.onError(throwable);
+                }
+            }));
+        }
+    }
+
     private DataImageRequest createDataImageRequest(String albumName, int mPage) {
         DataImageRequest request = new DataImageRequest();
         request.setKeyMenu(albumName);
         request.setPage(mPage);
+        mDataImageRequest = request;
         return request;
     }
 }
