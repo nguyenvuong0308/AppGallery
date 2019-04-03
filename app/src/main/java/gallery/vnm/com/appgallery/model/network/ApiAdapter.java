@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import gallery.vnm.com.appgallery.model.Album;
+import gallery.vnm.com.appgallery.model.AlbumResponse;
 import gallery.vnm.com.appgallery.model.DataImage;
 import gallery.vnm.com.appgallery.model.DataImagesResponse;
 import gallery.vnm.com.appgallery.model.EnumFlag;
-import gallery.vnm.com.appgallery.model.AlbumResponse;
 
 public class ApiAdapter {
     public static DataImagesResponse convertResponseDataSheetToDataImage(List<List<Object>> sheets) {
@@ -20,6 +20,15 @@ public class ApiAdapter {
                     switch (i) {
                         case DataImageColumn.ID:
                             dataImage.setId(objects.get(i).toString());
+                            break;
+                        case DataImageColumn.TEXT_CLIENT_ID:
+                            dataImage.setTextClientId(objects.get(i).toString());
+                            break;
+                        case DataImageColumn.WRITER_NAME:
+                            dataImage.setWriterName(objects.get(i).toString());
+                            break;
+                        case DataImageColumn.WRITER_THUMB:
+                            dataImage.setWriterThumb(objects.get(i).toString());
                             break;
                         case DataImageColumn.POST_TYPE:
                             dataImage.setPostType(objects.get(i).toString());
@@ -92,14 +101,17 @@ public class ApiAdapter {
 
     interface DataImageColumn {
         int ID = 0;
-        int POST_TYPE = 1;
-        int FLAG = 2;
-        int TAG = 3;
-        int HINT = 4;
-        int VIDEO = 5;
-        int VIDEO_THUMB = 6;
-        int IMAGES = 7;
-        int MESSAGE = 8;
+        int TEXT_CLIENT_ID = 1;
+        int WRITER_NAME = 2;
+        int WRITER_THUMB = 3;
+        int POST_TYPE = 4;
+        int FLAG = 5;
+        int TAG = 6;
+        int HINT = 7;
+        int VIDEO = 8;
+        int VIDEO_THUMB = 9;
+        int IMAGES = 10;
+        int MESSAGE = 11;
     }
 
     interface AlbumColumn {

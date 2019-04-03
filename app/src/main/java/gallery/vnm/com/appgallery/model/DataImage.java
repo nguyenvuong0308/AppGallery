@@ -6,6 +6,9 @@ import java.util.Arrays;
 public class DataImage {
 
     private String id;
+    private String textClientId;
+    private String writerName;
+    private String writerThumb;
     private String message;
     private ArrayList<String> images = null;
     private String postType;
@@ -19,6 +22,30 @@ public class DataImage {
 
     public boolean isDownload() {
         return isDownload;
+    }
+
+    public String getTextClientId() {
+        return textClientId;
+    }
+
+    public void setTextClientId(String textClientId) {
+        this.textClientId = textClientId;
+    }
+
+    public String getWriterName() {
+        return writerName;
+    }
+
+    public void setWriterName(String writerName) {
+        this.writerName = writerName;
+    }
+
+    public String getWriterThumb() {
+        return writerThumb;
+    }
+
+    public void setWriterThumb(String writerThumb) {
+        this.writerThumb = writerThumb;
     }
 
     public String getId() {

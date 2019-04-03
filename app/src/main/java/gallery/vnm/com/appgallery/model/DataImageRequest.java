@@ -29,7 +29,7 @@ public class DataImageRequest {
             boolean isFirstPage = ((mPage - 1) * PAGE_SIZE) == 0;
             int positionStartPage = ((mPage - 1) * PAGE_SIZE) + 2 + (isFirstPage ? 0 : 1);
             int positionEndPage = (mPage * PAGE_SIZE) + 2;
-            return mAlbumId + "!A" + positionStartPage + ":" + "I" + positionEndPage;
+            return mAlbumId + "!A" + positionStartPage + ":" + "L" + positionEndPage;
         }
     }
 }

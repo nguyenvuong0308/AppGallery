@@ -33,12 +33,14 @@ import java.util.Arrays;
 import gallery.vnm.com.appgallery.AppPreference;
 import gallery.vnm.com.appgallery.ListImageAdapter;
 import gallery.vnm.com.appgallery.LoginActivity;
+import gallery.vnm.com.appgallery.MyApplication;
 import gallery.vnm.com.appgallery.R;
 import gallery.vnm.com.appgallery.Screen.drawerlayout.ContentLayoutContact;
 import gallery.vnm.com.appgallery.Screen.drawerlayout.ContentLayoutPresenter;
 import gallery.vnm.com.appgallery.Screen.drawerlayout.DrawerLayoutAdapter;
 import gallery.vnm.com.appgallery.Screen.drawerlayout.DrawerLayoutContract;
 import gallery.vnm.com.appgallery.Screen.drawerlayout.DrawerLayoutPresenter;
+import gallery.vnm.com.appgallery.Screen.editscreen.EditActivity;
 import gallery.vnm.com.appgallery.model.Album;
 import gallery.vnm.com.appgallery.model.DataImage;
 import gallery.vnm.com.appgallery.model.network.RequestApiNetwork;
@@ -50,6 +52,7 @@ import gallery.vnm.com.appgallery.model.network.RequestApiNetwork;
 public class MainActivity extends AppCompatActivity implements DrawerLayoutContract.View, ContentLayoutContact.View {
     private static final String[] SCOPES = {SheetsScopes.SPREADSHEETS_READONLY};
     private static final int REQUEST_AUTHORIZATION = 12345;
+    private static final int REQUEST_EDIT_MESSAGE = 123;
     private RecyclerView mRcvMenu;
     private RecyclerView mRcvListImage;
     private DrawerLayoutContract.Presenter mDrawerLayoutPresenter;
@@ -106,6 +109,11 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         mListImageAdapter.setListImageOnclick((item, position) -> {
             replaceFragment(ShowImageFragment.newInstance(item, position));
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        });
+
+        mListImageAdapter.setEditOnClick((item, position) -> {
+            ((MyApplication)getApplication()).setDataImageTmp(item);
+            startActivityForResult(new Intent(MainActivity.this, EditActivity.class), REQUEST_EDIT_MESSAGE);
         });
         mDrawerLayoutPresenter.loadAlbums(this);
         mIvMenu.setOnClickListener(v -> {
