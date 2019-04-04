@@ -12,13 +12,13 @@
         android:layout_marginTop="5dp"
         android:layout_marginBottom="5dp">
 
-        <EditText
+        <TextView
             android:id="@+id/tvMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_marginEnd="5dp"
-            android:layout_toStartOf="@+id/tbControl1"
+            android:layout_toStartOf="@+id/ivEdit"
             android:background="@drawable/bg_edit"
             android:ellipsize="end"
             android:enabled="false"
@@ -28,51 +28,14 @@
             android:textColor="@color/colorPrimary"
             android:textSize="@dimen/text_size_huge" />
 
-        <TableRow
-            android:id="@+id/tbControl1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true">
-
-            <ImageView
-                android:id="@+id/ivEditMessage"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_edit" />
-
-            <gallery.vnm.com.appgallery.ENDownloadView
-                android:id="@+id/ivDownloadAlbum"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
-                android:background="@drawable/circle"
-                android:src="@drawable/ic_download" />
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/tbControl2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/tbControl1"
+        <ImageView
+            android:id="@+id/ivEdit"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="10dp"
-            android:visibility="gone">
-
-            <ImageView
-                android:id="@+id/ivCopy"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_copy" />
-
-            <ImageView
-                android:id="@+id/ivExpandLess"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/ic_expand_less" />
-        </TableRow>
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/ic_three_dot" />
     </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView

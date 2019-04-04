@@ -121,40 +121,9 @@ public class ListImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             }
             imageAdapter.setImageOnClick(mImageOnClick);
             imageAdapter.setListImageOnClick(mListImageOnClick);
-            listImageHolder.mIvEditMessage.setOnClickListener(v -> {
+            listImageHolder.mIvEdit.setOnClickListener(v -> {
                 if (mEditOnClick != null) {
                     mEditOnClick.onClick(dataImage, position);
-                }
-                listImageHolder.mTvMessage.setSingleLine(false);
-                listImageHolder.mTvMessage.setEnabled(true);
-                listImageHolder.mTbControl2.setVisibility(View.VISIBLE);
-            });
-            listImageHolder.mIvExpandLess.setOnClickListener(v -> {
-                listImageHolder.mTbControl2.setVisibility(View.GONE);
-                listImageHolder.mTvMessage.setSingleLine(true);
-                listImageHolder.mTvMessage.setEnabled(false);
-            });
-            listImageHolder.mIvCopy.setOnClickListener(v -> {
-                ClipboardManager clipboard = (ClipboardManager) mContext.getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText(listImageHolder.mTvMessage.getText(), listImageHolder.mTvMessage.getText());
-                if (clipboard != null) {
-                    clipboard.setPrimaryClip(clip);
-                    Toast.makeText(mContext, "Copy thành công!", Toast.LENGTH_SHORT).show();
-                }
-            });
-
-            if (!dataImage.isDownload()) {
-                listImageHolder.mIvDownloadAlbum.reset();
-                Log.d("dataImage", position + ":::");
-            } else {
-                listImageHolder.mIvDownloadAlbum.end();
-            }
-            listImageHolder.mIvDownloadAlbum.setDownloadConfig(1000, 0.0, ENDownloadView.DownloadUnit.KB);
-            listImageHolder.mIvDownloadAlbum.setOnClickListener(v -> {
-                if (!dataImage.isDownload()) {
-                    dataImage.setDownload(true);
-                    listImageHolder.mIvDownloadAlbum.start();
-                    DownloadControl.downloadFiles(mContext, dataImage.getImages());
                 }
             });
             listImageHolder.mRcvImage.setAdapter(imageAdapter);
@@ -212,28 +181,25 @@ public class ListImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.mEditOnClick = mEditOnClick;
     }
 
+    public void updateMessageItem(int position, String messageChange) {
+        mDataImages.get(position).setMessage(messageChange);
+        notifyItemChanged(position);
+    }
+
     public interface ILoadMore {
         void onLoadMore();
     }
 
     public class ListImageHolder extends RecyclerView.ViewHolder {
         private TextView mTvMessage;
-        private ImageView mIvEditMessage;
-        private ImageView mIvCopy;
-        private ImageView mIvExpandLess;
-        private ENDownloadView mIvDownloadAlbum;
+        private ImageView mIvEdit;
         private RecyclerView mRcvImage;
-        private TableRow mTbControl2;
 
         ListImageHolder(View itemView) {
             super(itemView);
             mTvMessage = itemView.findViewById(R.id.tvMessage);
-            mIvEditMessage = itemView.findViewById(R.id.ivEditMessage);
+            mIvEdit = itemView.findViewById(R.id.ivEdit);
             mRcvImage = itemView.findViewById(R.id.rcvImages);
-            mIvCopy = itemView.findViewById(R.id.ivCopy);
-            mIvExpandLess = itemView.findViewById(R.id.ivExpandLess);
-            mTbControl2 = itemView.findViewById(R.id.tbControl2);
-            mIvDownloadAlbum = itemView.findViewById(R.id.ivDownloadAlbum);
         }
     }
 

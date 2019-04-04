@@ -1,12 +1,23 @@
 package gallery.vnm.com.appgallery.Screen.editscreen;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import gallery.vnm.com.appgallery.DownloadControl;
 import gallery.vnm.com.appgallery.ImageAdapter;
 import gallery.vnm.com.appgallery.MyApplication;
 import gallery.vnm.com.appgallery.R;
@@ -16,10 +27,19 @@ import gallery.vnm.com.appgallery.SpanSizeLookup1x3;
 import gallery.vnm.com.appgallery.SpanSizeLookup2x1;
 import gallery.vnm.com.appgallery.SpanSizeLookup2x2;
 import gallery.vnm.com.appgallery.model.DataImage;
+import gallery.vnm.com.appgallery.model.local.MessageComment;
+import io.realm.Realm;
 
 public class EditActivity extends AppCompatActivity implements EditScreenContract.View {
     private RecyclerView mRcvImages;
     private EditText mEdtMessage;
+    private ImageView mIvBack;
+    private ImageView mIvActionMore;
+    private TextView mTvSave;
+    private TextView mTvWriterName;
+    private TextView mTvAlbumName;
+    private DataImage mDataImage;
+    private MyApplication mMyApplication;
 
 
     @Override
@@ -30,14 +50,23 @@ public class EditActivity extends AppCompatActivity implements EditScreenContrac
     }
 
     private void initView() {
+        mMyApplication = (MyApplication) getApplication();
+        mIvBack = findViewById(R.id.ivBack);
+        mTvSave = findViewById(R.id.tvSave);
+        mIvActionMore = findViewById(R.id.ivActionMore);
+        mTvWriterName = findViewById(R.id.tvWriterName);
+        mTvAlbumName = findViewById(R.id.tvAlbumName);
         mRcvImages = findViewById(R.id.rcvImages);
         mEdtMessage = findViewById(R.id.edtMessage);
-        MyApplication application = (MyApplication) getApplication();
         GridLayoutManager layoutManager;
-        DataImage dataImage = application.getDataImageTmp();
-        mEdtMessage.setText(dataImage.getMessage());
-        ImageAdapter imageAdapter = new ImageAdapter(this, application.getDataImageTmp().getImages());
-        switch (dataImage.getPostType()) {
+        mDataImage = mMyApplication.getDataImageTmp();
+
+        mTvWriterName.setText(TextUtils.isEmpty(mDataImage.getWriterName()) ? "Unknown" : mDataImage.getWriterName());
+        mTvAlbumName.setText(TextUtils.isEmpty(mMyApplication.getAlbumName()) ? "Unknown" : mMyApplication.getAlbumName());
+        mEdtMessage.setText(mDataImage.getMessage());
+        mEdtMessage.setSelection(mEdtMessage.getText().toString().length());
+        ImageAdapter imageAdapter = new ImageAdapter(this, mDataImage.getImages());
+        switch (mDataImage.getPostType()) {
             case "vuong2x1":
                 layoutManager = new GridLayoutManager(this, 2);
                 imageAdapter.setMaxSize(3);
@@ -71,5 +100,80 @@ public class EditActivity extends AppCompatActivity implements EditScreenContrac
         mRcvImages.setAdapter(imageAdapter);
         mRcvImages.setLayoutManager(layoutManager);
         mRcvImages.setHasFixedSize(true);
+
+        binEvent();
     }
+
+    private void binEvent() {
+        mIvBack.setOnClickListener(v -> {
+            finish();
+            hideKeyboard();
+        });
+        mTvSave.setOnClickListener(v -> {
+            Realm realm = Realm.getDefaultInstance();
+            MessageComment messageComment = realm.where(MessageComment.class).equalTo("textClientId", mDataImage.getTextClientId()).findFirst();
+            if (messageComment != null) {
+                realm.executeTransaction(realm1 -> {
+                    messageComment.setMessageComment(mEdtMessage.getText().toString());
+                });
+            } else {
+                realm.executeTransaction(realm1 -> {
+                    Number currentIdNum = realm.where(MessageComment.class).max("id");
+                    int nextId;
+                    if (currentIdNum == null) {
+                        nextId = 1;
+                    } else {
+                        nextId = currentIdNum.intValue() + 1;
+                    }
+                    MessageComment newMessageComment = new MessageComment();
+                    newMessageComment.setTextClientId(mDataImage.getTextClientId());
+                    newMessageComment.setId(nextId);
+                    newMessageComment.setMessageComment(mEdtMessage.getText().toString());
+                    realm.insertOrUpdate(newMessageComment);
+                });
+            }
+            mMyApplication.setMessageChange(mEdtMessage.getText().toString());
+            setResult(RESULT_OK);
+            hideKeyboard();
+            finish();
+        });
+
+        mIvActionMore.setOnClickListener(v -> {
+            PopupMenu popupMenu = new PopupMenu(this, mIvActionMore);
+            popupMenu.getMenuInflater().inflate(R.menu.popup_more, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(item -> {
+                switch (item.getItemId()) {
+                    case R.id.copy: {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText(mEdtMessage.getText(), mEdtMessage.getText());
+                        if (clipboard != null) {
+                            clipboard.setPrimaryClip(clip);
+                            Toast.makeText(this, "Copy thành công!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    break;
+                    case R.id.download: {
+                        DownloadControl.downloadFiles(this, mDataImage.getImages());
+                    }
+                }
+                return true;
+            });
+            popupMenu.show();
+        });
+    }
+
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) getSystemService(AppCompatActivity.INPUT_METHOD_SERVICE);
+        //Find the currently focused view, so we can grab the correct window token from it.
+        View view = getCurrentFocus();
+        //If no view currently has focus, create a new one, just so we can grab a window token from it
+        if (view == null) {
+            view = new View(this);
+        }
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+
 }

@@ -8,10 +8,13 @@ import gallery.vnm.com.appgallery.model.AlbumResponse;
 import gallery.vnm.com.appgallery.model.DataImage;
 import gallery.vnm.com.appgallery.model.DataImagesResponse;
 import gallery.vnm.com.appgallery.model.EnumFlag;
+import gallery.vnm.com.appgallery.model.local.MessageComment;
+import io.realm.Realm;
 
 public class ApiAdapter {
     public static DataImagesResponse convertResponseDataSheetToDataImage(List<List<Object>> sheets) {
         DataImagesResponse dataImagesResponse = new DataImagesResponse();
+        Realm realm = Realm.getDefaultInstance();
         ArrayList<DataImage> dataImages = new ArrayList<>();
         if (sheets != null) {
             for (List<Object> objects : sheets) {
@@ -57,9 +60,14 @@ public class ApiAdapter {
                             break;
                         case DataImageColumn.MESSAGE:
                             dataImage.setMessage(objects.get(i).toString());
+                            break;
                         default:
                             break;
                     }
+                }
+                MessageComment messageComment = realm.where(MessageComment.class).equalTo("textClientId", dataImage.getTextClientId()).findFirst();
+                if (messageComment != null) {
+                    dataImage.setMessage(messageComment.getMessageComment());
                 }
                 dataImages.add(dataImage);
             }

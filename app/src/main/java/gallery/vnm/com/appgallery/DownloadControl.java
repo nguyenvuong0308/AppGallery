@@ -15,7 +15,7 @@ import static android.content.Context.DOWNLOAD_SERVICE;
 public class DownloadControl {
     private static final String PATH_FOLDER_IMAGE = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "AppGallery";
 
-    static void downloadFiles(Context context, ArrayList<String> listUrl) {
+    public static void downloadFiles(Context context, ArrayList<String> listUrl) {
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
         String nameDir = "";
         /*tạo folder với tên image đầu tiên trong list*/

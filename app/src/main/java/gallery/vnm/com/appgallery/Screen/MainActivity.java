@@ -65,12 +65,14 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private DrawerLayout mDrawerLayout;
     private GoogleAccountCredential mCredential;
+    private MyApplication mMyApplication;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         init();
+        mMyApplication = (MyApplication) getApplication();
     }
 
     private void init() {
@@ -112,7 +114,9 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         });
 
         mListImageAdapter.setEditOnClick((item, position) -> {
-            ((MyApplication)getApplication()).setDataImageTmp(item);
+            mMyApplication.setDataImageTmp(item);
+            mMyApplication.setPosition(position);
+            mMyApplication.setAlbumName(mDrawerLayoutAdapter.getMenuSelected().getAlbumName());
             startActivityForResult(new Intent(MainActivity.this, EditActivity.class), REQUEST_EDIT_MESSAGE);
         });
         mDrawerLayoutPresenter.loadAlbums(this);
@@ -250,6 +254,12 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
                 }
             }
             break;
+
+            case REQUEST_EDIT_MESSAGE: {
+                if (resultCode == RESULT_OK) {
+                    mListImageAdapter.updateMessageItem(mMyApplication.getPosition(), mMyApplication.getMessageChange());
+                }
+            }
         }
     }
 }
