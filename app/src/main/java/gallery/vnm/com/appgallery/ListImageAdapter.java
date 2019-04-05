@@ -30,7 +30,7 @@ public class ListImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private ArrayList<DataImage> mDataImages;
     private OnItemClick<String> mImageOnClick;
     private OnItemClick<ArrayList<String>> mListImageOnClick;
-    private OnItemClick<DataImage> mEditOnClick;
+    private OnItemClick.OnItemClick2<DataImage> mEditOnClick;
     private int totalItemCount;
     private int lastVisibleItem;
     private boolean isLoading = false;
@@ -123,7 +123,7 @@ public class ListImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             imageAdapter.setListImageOnClick(mListImageOnClick);
             listImageHolder.mIvEdit.setOnClickListener(v -> {
                 if (mEditOnClick != null) {
-                    mEditOnClick.onClick(dataImage, position);
+                    mEditOnClick.onClick(dataImage,listImageHolder.mIvEdit, position);
                 }
             });
             listImageHolder.mRcvImage.setAdapter(imageAdapter);
@@ -177,7 +177,7 @@ public class ListImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         notifyDataSetChanged();
     }
 
-    public void setEditOnClick(OnItemClick<DataImage> mEditOnClick) {
+    public void setEditOnClick(OnItemClick.OnItemClick2<DataImage> mEditOnClick) {
         this.mEditOnClick = mEditOnClick;
     }
 

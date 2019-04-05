@@ -1,5 +1,8 @@
 package gallery.vnm.com.appgallery.Screen;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -9,6 +12,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +23,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import gallery.vnm.com.appgallery.AppPreference;
+import gallery.vnm.com.appgallery.DownloadControl;
 import gallery.vnm.com.appgallery.ListImageAdapter;
 import gallery.vnm.com.appgallery.LoginActivity;
 import gallery.vnm.com.appgallery.MyApplication;
@@ -113,12 +119,38 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         });
 
-        mListImageAdapter.setEditOnClick((item, position) -> {
-            mMyApplication.setDataImageTmp(item);
-            mMyApplication.setPosition(position);
-            mMyApplication.setAlbumName(mDrawerLayoutAdapter.getMenuSelected().getAlbumName());
-            startActivityForResult(new Intent(MainActivity.this, EditActivity.class), REQUEST_EDIT_MESSAGE);
+        mListImageAdapter.setEditOnClick((item,view, position) -> {
+            PopupMenu popupMenu = new PopupMenu(this, view);
+            popupMenu.getMenuInflater().inflate(R.menu.popup_more_2, popupMenu.getMenu());
+            popupMenu.setOnMenuItemClickListener(item2 -> {
+                switch (item2.getItemId()) {
+                    case R.id.edit: {
+                        mMyApplication.setDataImageTmp(item);
+                        mMyApplication.setPosition(position);
+                        mMyApplication.setAlbumName(mDrawerLayoutAdapter.getMenuSelected().getAlbumName());
+                        startActivityForResult(new Intent(MainActivity.this, EditActivity.class), REQUEST_EDIT_MESSAGE);
+                    }
+                    break;
+                    case R.id.copy: {
+                        ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText(item.getMessage(), item.getMessage());
+                        if (clipboard != null) {
+                            clipboard.setPrimaryClip(clip);
+                            Toast.makeText(this, "Sap chép thành công!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    break;
+                    case R.id.download: {
+                        DownloadControl.downloadFiles(this, item.getImages(), mDrawerLayoutAdapter.getMenuSelected().getAlbumName() +"_" + item.getTextClientId());
+                        Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                }
+                return true;
+            });
+            popupMenu.show();
         });
+
         mDrawerLayoutPresenter.loadAlbums(this);
         mIvMenu.setOnClickListener(v -> {
             if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
@@ -225,14 +257,18 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
 
     @Override
     public void onUpdateRequired(String extendData) {
-        String titleUpdate = "Update Required";
-        SpannableString content = new SpannableString(titleUpdate);
-        content.setSpan(new UnderlineSpan(), 0, titleUpdate.length(), 0);
-        mTvUpdateRequired.setText(content);
-        mTvUpdateRequired.setOnClickListener(view -> {
-            Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(extendData));
-            startActivity(browserIntent);
-        });
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Thông báo cập nhật phần mềm!")
+                .setMessage("Yêu cầu cập nhật phần mềm để tiếp tục sử dụng!")
+                .setPositiveButton("Cập nhật", (dialogInterface, i) -> {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(extendData));
+                    startActivity(browserIntent);
+                })
+                .setCancelable(false)
+                .setNeutralButton("Bỏ qua", (dialogInterface, i) -> {
+                    finish();
+                });
+        builder.create().show();
     }
 
     public void replaceFragment(Fragment fragment) {

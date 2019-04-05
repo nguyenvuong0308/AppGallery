@@ -148,12 +148,13 @@ public class EditActivity extends AppCompatActivity implements EditScreenContrac
                         ClipData clip = ClipData.newPlainText(mEdtMessage.getText(), mEdtMessage.getText());
                         if (clipboard != null) {
                             clipboard.setPrimaryClip(clip);
-                            Toast.makeText(this, "Copy thành công!", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(this, "Sap chép thành công!", Toast.LENGTH_SHORT).show();
                         }
                     }
                     break;
                     case R.id.download: {
-                        DownloadControl.downloadFiles(this, mDataImage.getImages());
+                        DownloadControl.downloadFiles(this, mDataImage.getImages(), mMyApplication.getAlbumName() + "_" + mDataImage.getTextClientId());
+                        Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
                     }
                 }
                 return true;

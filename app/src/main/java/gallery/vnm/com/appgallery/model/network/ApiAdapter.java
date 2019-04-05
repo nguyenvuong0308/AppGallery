@@ -69,7 +69,9 @@ public class ApiAdapter {
                 if (messageComment != null) {
                     dataImage.setMessage(messageComment.getMessageComment());
                 }
-                dataImages.add(dataImage);
+                if (dataImage.getFlag() != EnumFlag.OFF) {
+                    dataImages.add(dataImage);
+                }
             }
             dataImagesResponse.setData(dataImages);
         }
@@ -100,7 +102,9 @@ public class ApiAdapter {
                             break;
                     }
                 }
-                albums.add(album);
+                if (album.getFlag() != EnumFlag.OFF) {
+                    albums.add(album);
+                }
             }
         }
         response.setAlbums(albums);
