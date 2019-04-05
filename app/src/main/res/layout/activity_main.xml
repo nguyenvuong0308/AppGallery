@@ -8,7 +8,7 @@
     <LinearLayout
         android:id="@+id/action_bar"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="?actionBarSize"
         android:background="@color/colorPrimary"
         android:orientation="horizontal">
 
@@ -18,7 +18,7 @@
             android:layout_height="56dp"
             android:layout_gravity="center_vertical"
             android:layout_marginStart="5dp"
-            android:padding="12dp"
+            android:padding="15dp"
             android:src="@drawable/ic_menu" />
 
         <TextView
@@ -26,9 +26,9 @@
             android:layout_height="match_parent"
             android:layout_marginStart="10dp"
             android:gravity="center"
-            android:text="Gallery"
+            android:text="@string/app_name"
             android:textColor="@android:color/white"
-            android:textSize="24sp" />
+            android:textSize="@dimen/text_size_actionbar" />
     </LinearLayout>
 
     <android.support.v4.widget.DrawerLayout
@@ -51,8 +51,6 @@
                     android:id="@+id/rcvListImage"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:background="@color/color_decorator_image"
-                    android:padding="1.5dp"
                     tools:listitem="@layout/item_list_image" />
             </android.support.v4.widget.SwipeRefreshLayout>
 

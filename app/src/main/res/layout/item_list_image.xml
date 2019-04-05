@@ -26,7 +26,7 @@
             android:singleLine="true"
             android:text="Messagssssssssssssssssssssssssssssssssssssssssssssssssssssssssssse"
             android:textColor="@color/colorPrimary"
-            android:textSize="@dimen/text_size_huge" />
+            android:textSize="@dimen/text_size_normal" />
 
         <ImageView
             android:id="@+id/ivEdit"
@@ -48,7 +48,8 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="3dp"
+        android:layout_height="9dp"
+        android:layout_marginBottom="9dp"
         android:layout_below="@+id/rcvImages"
-        android:background="@color/color_decorator_image" />
+        android:background="@color/color_gray_light_more" />
 </RelativeLayout>

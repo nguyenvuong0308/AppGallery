@@ -3,6 +3,7 @@ package gallery.vnm.com.appgallery.Screen.editscreen;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,12 @@ import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DataSource;
+import com.bumptech.glide.load.engine.GlideException;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
 
 import gallery.vnm.com.appgallery.DownloadControl;
 import gallery.vnm.com.appgallery.ImageAdapter;
@@ -35,6 +42,7 @@ public class EditActivity extends AppCompatActivity implements EditScreenContrac
     private EditText mEdtMessage;
     private ImageView mIvBack;
     private ImageView mIvActionMore;
+    private ImageView mIvWriterThumb;
     private TextView mTvSave;
     private TextView mTvWriterName;
     private TextView mTvAlbumName;
@@ -58,9 +66,21 @@ public class EditActivity extends AppCompatActivity implements EditScreenContrac
         mTvAlbumName = findViewById(R.id.tvAlbumName);
         mRcvImages = findViewById(R.id.rcvImages);
         mEdtMessage = findViewById(R.id.edtMessage);
+        mIvWriterThumb = findViewById(R.id.ivWriterThumb);
         GridLayoutManager layoutManager;
         mDataImage = mMyApplication.getDataImageTmp();
+        Glide.with(this).load(mDataImage.getWriterThumb()).listener(new RequestListener<Drawable>() {
+            @Override
+            public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                mIvWriterThumb.setImageResource(R.drawable.ic_noimage);
+                return true;
+            }
 
+            @Override
+            public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                return false;
+            }
+        }).into(mIvWriterThumb);
         mTvWriterName.setText(TextUtils.isEmpty(mDataImage.getWriterName()) ? "Unknown" : mDataImage.getWriterName());
         mTvAlbumName.setText(TextUtils.isEmpty(mMyApplication.getAlbumName()) ? "Unknown" : mMyApplication.getAlbumName());
         mEdtMessage.setText(mDataImage.getMessage());

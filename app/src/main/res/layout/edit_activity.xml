@@ -8,7 +8,7 @@
     <View
         android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="?actionBarSize"
         android:background="@color/colorPrimary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -17,9 +17,9 @@
     <ImageView
         android:id="@+id/ivBack"
         android:layout_width="56dp"
-        android:layout_height="56dp"
+        android:layout_height="?actionBarSize"
         android:layout_gravity="center_vertical"
-        android:padding="12dp"
+        android:padding="15dp"
         android:src="@drawable/ic_arrow"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -31,7 +31,7 @@
         android:gravity="center"
         android:text="Chỉnh sửa bài viết"
         android:textColor="@android:color/white"
-        android:textSize="24sp"
+        android:textSize="@dimen/text_size_actionbar"
         app:layout_constraintBottom_toBottomOf="@+id/ivBack"
         app:layout_constraintStart_toEndOf="@+id/ivBack"
         app:layout_constraintTop_toTopOf="@+id/tvSave" />
@@ -45,7 +45,7 @@
         android:paddingEnd="20dp"
         android:text="Lưu"
         android:textColor="@android:color/white"
-        android:textSize="24sp"
+        android:textSize="@dimen/text_size_actionbar"
         app:layout_constraintBottom_toBottomOf="@id/ivBack"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/ivBack" />
@@ -56,12 +56,12 @@
         android:layout_height="64dp"
         android:layout_marginStart="8dp"
         app:civ_border_width="1dp"
-        app:civ_border_color="@color/colorPrimary"
+        app:civ_border_color="@color/color_gray"
         android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ivBack"
         android:scaleType="centerCrop"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@drawable/ic_noimage" />
 
     <TextView
         android:id="@+id/tvWriterName"
@@ -126,6 +126,7 @@
                 android:background="@color/white"
                 android:id="@+id/edtMessage"
                 android:paddingBottom="15dp"
+                android:textSize="@dimen/text_size_normal"
                 tools:text="Đây là comment\nĐây là comment\nĐây là comment\nĐây là comment\nĐây là comment\nĐây là comment\nĐây là comment\nĐây là comment\nĐây là comment\nĐây là comment\nĐây là comment\nĐây là comment\nĐây là comment\nĐây là comment\nĐây là comment\nĐây là comment" />
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
@@ -134,10 +135,9 @@
         android:id="@+id/rcvImages"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
+        tools:listitem="@layout/item_image_full"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
