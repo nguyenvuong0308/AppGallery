@@ -1,27 +1,64 @@
 package gallery.vnm.com.appgallery.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class DataImage {
+public class DataImage implements Parcelable {
 
-    private String id;
-    private String textClientId;
-    private String writerName;
-    private String writerThumb;
-    private String message;
+    private String id = "";
+    private String textClientId = "";
+    private String writerName = "";
+    private String writerThumb = "";
+    private String message = "";
     private ArrayList<String> images = null;
-    private String postType;
-    private String video;
+    private String postType = "";
+    private String video = "";
     private EnumFlag flag;
-    private String tag;
-    private String hint;
-    private String videoThumb;
+    private String tag = "";
+    private String hint = "";
+    private String videoThumb = "";
 
     private boolean isDownload = false;
 
+    public DataImage() {
+    }
+
+    protected DataImage(Parcel in) {
+        id = in.readString();
+        textClientId = in.readString();
+        writerName = in.readString();
+        writerThumb = in.readString();
+        message = in.readString();
+        images = in.createStringArrayList();
+        postType = in.readString();
+        video = in.readString();
+        tag = in.readString();
+        hint = in.readString();
+        videoThumb = in.readString();
+        isDownload = in.readByte() != 0;
+    }
+
+    public static final Creator<DataImage> CREATOR = new Creator<DataImage>() {
+        @Override
+        public DataImage createFromParcel(Parcel in) {
+            return new DataImage(in);
+        }
+
+        @Override
+        public DataImage[] newArray(int size) {
+            return new DataImage[size];
+        }
+    };
+
     public boolean isDownload() {
         return isDownload;
+    }
+
+    public void setDownload(boolean download) {
+        isDownload = download;
     }
 
     public String getTextClientId() {
@@ -56,10 +93,6 @@ public class DataImage {
         this.id = id;
     }
 
-    public void setDownload(boolean download) {
-        isDownload = download;
-    }
-
     public String getMessage() {
         return message;
     }
@@ -72,10 +105,6 @@ public class DataImage {
         return images;
     }
 
-    public void setImages(ArrayList<String> images) {
-        this.images = images;
-    }
-
     public void setImages(String images[]) {
         if (images != null && images.length > 0) {
             this.images = new ArrayList<>();
@@ -83,8 +112,12 @@ public class DataImage {
         }
     }
 
+    public void setImages(ArrayList<String> images) {
+        this.images = images;
+    }
+
     public String getPostType() {
-        return postType;
+        return postType == null ? "" : postType;
     }
 
     public void setPostType(String postType) {
@@ -129,5 +162,26 @@ public class DataImage {
 
     public void setVideoThumb(String videoThumb) {
         this.videoThumb = videoThumb;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(textClientId);
+        parcel.writeString(writerName);
+        parcel.writeString(writerThumb);
+        parcel.writeString(message);
+        parcel.writeStringList(images);
+        parcel.writeString(postType);
+        parcel.writeString(video);
+        parcel.writeString(tag);
+        parcel.writeString(hint);
+        parcel.writeString(videoThumb);
+        parcel.writeByte((byte) (isDownload ? 1 : 0));
     }
 }

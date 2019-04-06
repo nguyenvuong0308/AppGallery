@@ -20,9 +20,7 @@
         android:layout_height="?actionBarSize"
         android:layout_gravity="center_vertical"
         android:padding="15dp"
-        android:src="@drawable/ic_arrow"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:src="@drawable/ic_arrow" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -52,8 +50,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/ivWriterThumb"
-        android:layout_width="64dp"
-        android:layout_height="64dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_marginStart="8dp"
         app:civ_border_width="1dp"
         app:civ_border_color="@color/color_gray"
@@ -68,7 +66,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:text="Minh Vương"
         android:textColor="@color/black"
@@ -84,7 +82,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="4dp"
         android:text="Album 1"
         android:textColor="@color/black"
         android:textSize="@dimen/text_size_normal"

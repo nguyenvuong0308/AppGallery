@@ -16,8 +16,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableString;
-import android.text.style.UnderlineSpan;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -36,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import gallery.vnm.com.appgallery.AppPreference;
+import gallery.vnm.com.appgallery.DialogCustom;
 import gallery.vnm.com.appgallery.DownloadControl;
 import gallery.vnm.com.appgallery.ListImageAdapter;
 import gallery.vnm.com.appgallery.LoginActivity;
@@ -49,6 +48,7 @@ import gallery.vnm.com.appgallery.Screen.drawerlayout.DrawerLayoutPresenter;
 import gallery.vnm.com.appgallery.Screen.editscreen.EditActivity;
 import gallery.vnm.com.appgallery.model.Album;
 import gallery.vnm.com.appgallery.model.DataImage;
+import gallery.vnm.com.appgallery.model.DataImageTmp;
 import gallery.vnm.com.appgallery.model.network.RequestApiNetwork;
 
 /**
@@ -58,7 +58,7 @@ import gallery.vnm.com.appgallery.model.network.RequestApiNetwork;
 public class MainActivity extends AppCompatActivity implements DrawerLayoutContract.View, ContentLayoutContact.View {
     private static final String[] SCOPES = {SheetsScopes.SPREADSHEETS_READONLY};
     private static final int REQUEST_AUTHORIZATION = 12345;
-    private static final int REQUEST_EDIT_MESSAGE = 123;
+    public static final int REQUEST_EDIT_MESSAGE = 123;
     private RecyclerView mRcvMenu;
     private RecyclerView mRcvListImage;
     private DrawerLayoutContract.Presenter mDrawerLayoutPresenter;
@@ -67,11 +67,11 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     private ListImageAdapter mListImageAdapter;
     private ImageView mIvMenu;
     private TextView mTvWarning;
-    private TextView mTvUpdateRequired;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private DrawerLayout mDrawerLayout;
     private GoogleAccountCredential mCredential;
     private MyApplication mMyApplication;
+    private boolean addFragment = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,7 +96,6 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         mSwipeRefreshLayout = findViewById(R.id.sRLayout);
         mIvMenu = findViewById(R.id.ivMenu);
         mTvWarning = findViewById(R.id.tvWarning);
-        mTvUpdateRequired = findViewById(R.id.tvUpdateRequired);
         mRcvListImage = findViewById(R.id.rcvListImage);
         mDrawerLayout = findViewById(R.id.drawerLayout);
         mDrawerLayoutPresenter = new DrawerLayoutPresenter(this, new RequestApiNetwork(mCredential));
@@ -106,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         mRcvMenu.setLayoutManager(new LinearLayoutManager(this));
         mRcvMenu.setHasFixedSize(true);
         mDrawerLayoutAdapter.setMenuOnItemClick((item, position) -> {
-            mContentLayoutPresenter.refresh(this, item.getAlbumId());
+            mContentLayoutPresenter.refresh(this, item);
             mDrawerLayout.closeDrawer(Gravity.START);
         });
 
@@ -114,12 +113,33 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         mRcvListImage.setHasFixedSize(true);
         mListImageAdapter = new ListImageAdapter(this, mRcvListImage);
         mRcvListImage.setAdapter(mListImageAdapter);
-        mListImageAdapter.setListImageOnclick((item, position) -> {
-            replaceFragment(ShowImageFragment.newInstance(item, position));
+        mListImageAdapter.setOnItemClick((item, position) -> {
+            addFragment = true;
+            mListImageAdapter.isClearOnClick = addFragment;
+            DataImageTmp dataImageTmp = new DataImageTmp(item, mDrawerLayoutAdapter.getMenuSelected());
+            replaceFragment(ShowImageFragment.newInstance(dataImageTmp, position));
+            Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate);
+            mIvMenu.startAnimation(animation);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mIvMenu.setImageResource(R.drawable.ic_arrow);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         });
 
-        mListImageAdapter.setEditOnClick((item,view, position) -> {
+        mListImageAdapter.setEditOnClick((item, view, position) -> {
             PopupMenu popupMenu = new PopupMenu(this, view);
             popupMenu.getMenuInflater().inflate(R.menu.popup_more_2, popupMenu.getMenu());
             popupMenu.setOnMenuItemClickListener(item2 -> {
@@ -141,8 +161,26 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
                     }
                     break;
                     case R.id.download: {
-                        DownloadControl.downloadFiles(this, item.getImages(), mDrawerLayoutAdapter.getMenuSelected().getAlbumName() +"_" + item.getTextClientId());
+                        DownloadControl.downloadFiles(this, item.getImages(), mDrawerLayoutAdapter.getMenuSelected().getAlbumName() + "_" + item.getTextClientId());
                         Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+
+                    case R.id.hint: {
+                        DialogCustom custom = new DialogCustom(this);
+                        custom.setTitle("Hint!");
+                        custom.setMessage(item.getHint());
+                        custom.setPositiveAction("OK");
+                        custom.show();
+                    }
+                    break;
+
+                    case R.id.tag: {
+                        DialogCustom custom = new DialogCustom(this);
+                        custom.setTitle("Tag!");
+                        custom.setMessage(item.getTag());
+                        custom.setPositiveAction("OK");
+                        custom.show();
                     }
                     break;
                 }
@@ -153,11 +191,16 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
 
         mDrawerLayoutPresenter.loadAlbums(this);
         mIvMenu.setOnClickListener(v -> {
-            if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
-                mDrawerLayout.closeDrawer(Gravity.START);
+            if (addFragment) {
+                 onBackPressed();
             } else {
-                mDrawerLayout.openDrawer(Gravity.START);
+                if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+                    mDrawerLayout.closeDrawer(Gravity.START);
+                } else {
+                    mDrawerLayout.openDrawer(Gravity.START);
+                }
             }
+
 
         });
         mListImageAdapter.setLoadMore(() -> {
@@ -166,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
 
         mSwipeRefreshLayout.setOnRefreshListener(() -> {
             if (mDrawerLayoutAdapter.getMenuSelected() != null) {
-                mContentLayoutPresenter.refresh(this, mDrawerLayoutAdapter.getMenuSelected().getAlbumId());
+                mContentLayoutPresenter.refresh(this, mDrawerLayoutAdapter.getMenuSelected());
             } else {
                 Toast.makeText(this, "Chưa chọn album!", Toast.LENGTH_LONG).show();
                 mSwipeRefreshLayout.setRefreshing(false);
@@ -202,6 +245,26 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     public void onBackPressed() {
         super.onBackPressed();
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+        addFragment = false;
+        mListImageAdapter.isClearOnClick = addFragment;
+        Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate);
+        mIvMenu.startAnimation(animation);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mIvMenu.setImageResource(R.drawable.ic_menu);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
     }
 
     @Override
@@ -251,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
 
     @Override
     public void onSelectedAlbum(Album album) {
-        mContentLayoutPresenter.refresh(this, album.getAlbumId());
+        mContentLayoutPresenter.refresh(this, album);
         mDrawerLayoutAdapter.setAlbumSelected(album);
     }
 
@@ -263,6 +326,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
                 .setPositiveButton("Cập nhật", (dialogInterface, i) -> {
                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(extendData));
                     startActivity(browserIntent);
+                    finish();
                 })
                 .setCancelable(false)
                 .setNeutralButton("Bỏ qua", (dialogInterface, i) -> {
@@ -293,9 +357,19 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
 
             case REQUEST_EDIT_MESSAGE: {
                 if (resultCode == RESULT_OK) {
+                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
+                    if (fragment instanceof ShowImageFragment) {
+                        fragment.onActivityResult(requestCode, resultCode, data);
+                    }
                     mListImageAdapter.updateMessageItem(mMyApplication.getPosition(), mMyApplication.getMessageChange());
                 }
             }
         }
     }
+
+    @Override
+    public void onGetAlbumSelected(Album mAlbum) {
+        mListImageAdapter.setAlbum(mAlbum);
+    }
+
 }

@@ -9,4 +9,10 @@
     <item
         android:id="@+id/download"
         android:title="Tải ảnh về"/>
+    <item
+        android:id="@+id/hint"
+        android:title="Hint"/>
+    <item
+        android:id="@+id/tag"
+        android:title="Tag"/>
 </menu>

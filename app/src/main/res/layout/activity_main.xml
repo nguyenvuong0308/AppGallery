@@ -38,7 +38,7 @@
         tools:context="gallery.vnm.com.appgallery.Screen.MainActivity">
 
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -66,10 +66,10 @@
                 android:id="@+id/content_frame"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-        </FrameLayout>
+        </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="start"
             android:background="@color/white"
@@ -86,7 +86,7 @@
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rcvTest"
-                        android:layout_width="240dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="#ffffff"
                         android:choiceMode="singleChoice"
@@ -94,13 +94,13 @@
                         android:dividerHeight="0dp"
                         tools:listitem="@layout/item_tv" />
 
-                    <TextView
-                        android:id="@+id/tvUpdateRequired"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="@dimen/text_size_huge" />
+                    <View
+                        android:id="@+id/viewBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginStart="5dp"
+                        android:layout_marginEnd="5dp"
+                        android:background="@color/color_gray_light" />
                 </LinearLayout>
 
             </ScrollView>

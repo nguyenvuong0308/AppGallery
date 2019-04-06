@@ -6,6 +6,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,6 +25,7 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
+import gallery.vnm.com.appgallery.DialogCustom;
 import gallery.vnm.com.appgallery.DownloadControl;
 import gallery.vnm.com.appgallery.ImageAdapter;
 import gallery.vnm.com.appgallery.MyApplication;
@@ -33,6 +35,7 @@ import gallery.vnm.com.appgallery.SpanSizeLookup1x2;
 import gallery.vnm.com.appgallery.SpanSizeLookup1x3;
 import gallery.vnm.com.appgallery.SpanSizeLookup2x1;
 import gallery.vnm.com.appgallery.SpanSizeLookup2x2;
+import gallery.vnm.com.appgallery.TypePost;
 import gallery.vnm.com.appgallery.model.DataImage;
 import gallery.vnm.com.appgallery.model.local.MessageComment;
 import io.realm.Realm;
@@ -85,29 +88,34 @@ public class EditActivity extends AppCompatActivity implements EditScreenContrac
         mTvAlbumName.setText(TextUtils.isEmpty(mMyApplication.getAlbumName()) ? "Unknown" : mMyApplication.getAlbumName());
         mEdtMessage.setText(mDataImage.getMessage());
         mEdtMessage.setSelection(mEdtMessage.getText().toString().length());
-        ImageAdapter imageAdapter = new ImageAdapter(this, mDataImage.getImages());
+        ImageAdapter imageAdapter = new ImageAdapter(this, mDataImage.getImages(), mDataImage.getPostType());
         switch (mDataImage.getPostType()) {
-            case "vuong2x1":
+            case TypePost.VUONG2X1:
                 layoutManager = new GridLayoutManager(this, 2);
                 imageAdapter.setMaxSize(3);
                 layoutManager.setSpanSizeLookup(new SpanSizeLookup2x1());
                 break;
-            case "vuong1+3":
+            case TypePost.VUONG1X3:
                 layoutManager = new GridLayoutManager(this, 3);
                 imageAdapter.setMaxSize(4);
                 layoutManager.setSpanSizeLookup(new SpanSizeLookup1x3());
                 break;
-            case "vuong1+2":
+            case TypePost.VUONG1X2:
                 layoutManager = new GridLayoutManager(this, 2);
                 imageAdapter.setMaxSize(3);
                 layoutManager.setSpanSizeLookup(new SpanSizeLookup1x2());
                 break;
-            case "vuong2x2":
+            case TypePost.VUONG2X2:
                 imageAdapter.setMaxSize(4);
                 layoutManager = new GridLayoutManager(this, 2);
                 layoutManager.setSpanSizeLookup(new SpanSizeLookup2x2());
                 break;
-            case "vuongFull":
+            case TypePost.VUONGFULL:
+                imageAdapter.setMaxSize(1);
+                layoutManager = new GridLayoutManager(this, 1);
+                layoutManager.setSpanSizeLookup(new SpanSizeLookup1x1());
+                break;
+            case TypePost.POST_TYPE_1_AUTO:
                 imageAdapter.setMaxSize(1);
                 layoutManager = new GridLayoutManager(this, 1);
                 layoutManager.setSpanSizeLookup(new SpanSizeLookup1x1());
@@ -176,6 +184,24 @@ public class EditActivity extends AppCompatActivity implements EditScreenContrac
                         DownloadControl.downloadFiles(this, mDataImage.getImages(), mMyApplication.getAlbumName() + "_" + mDataImage.getTextClientId());
                         Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
                     }
+                    break;
+                    case R.id.hint: {
+                        DialogCustom custom = new DialogCustom(this);
+                        custom.setTitle("Hint!");
+                        custom.setMessage(mDataImage.getHint());
+                        custom.setPositiveAction("OK");
+                        custom.show();
+                    }
+                    break;
+
+                    case R.id.tag: {
+                        DialogCustom custom = new DialogCustom(this);
+                        custom.setTitle("Tag!");
+                        custom.setMessage(mDataImage.getTag());
+                        custom.setPositiveAction("OK");
+                        custom.show();
+                    }
+                    break;
                 }
                 return true;
             });

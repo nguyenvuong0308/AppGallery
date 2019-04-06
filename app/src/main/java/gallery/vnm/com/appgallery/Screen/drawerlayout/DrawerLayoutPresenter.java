@@ -69,28 +69,25 @@ public class DrawerLayoutPresenter implements DrawerLayoutContract.Presenter {
     private void processResponse(AlbumResponse response) {
         mAlbumRequest = null;
         /*case default và case required update*/
-        int checkSpecialCase = 0;
         for (int index = response.getAlbums().size() -1; index >= 0; index--) {
             Album album = response.getAlbums().get(index);
-            if (album.getFlag() == EnumFlag.DEFAULT) {
-                checkSpecialCase++;
-                mView.onSelectedAlbum(album);
-            }
-
             if (album.getFlag() == EnumFlag.UPDATE_REQUIRED) {
-                checkSpecialCase++;
                 if (album.getExtendData() != null && (album.getExtendData().startsWith("http://") || album.getExtendData().startsWith("https://"))) {
                     mView.onUpdateRequired(album.getExtendData());
                     response.getAlbums().remove(album);
+                    break;
                 }
-            }
-
-            if (checkSpecialCase == 2) {
-                break;
             }
         }
         mAlbums.addAll(response.getAlbums());
         mView.onLoadAlbums(mAlbums);
+        for (int index = response.getAlbums().size() -1; index >= 0; index--) {
+            Album album = response.getAlbums().get(index);
+            if (album.getFlag() == EnumFlag.DEFAULT) {
+                mView.onSelectedAlbum(album);
+                break;
+            }
+        }
     }
 
     private AlbumRequest getMenuRequest() {

@@ -1,11 +1,35 @@
 package gallery.vnm.com.appgallery.model;
 
-public class Album {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Album implements Parcelable {
 
     private String albumId;
     private String albumName;
     private EnumFlag flag;
     private String extendData;
+
+    public Album() {
+    }
+
+    protected Album(Parcel in) {
+        albumId = in.readString();
+        albumName = in.readString();
+        extendData = in.readString();
+    }
+
+    public static final Creator<Album> CREATOR = new Creator<Album>() {
+        @Override
+        public Album createFromParcel(Parcel in) {
+            return new Album(in);
+        }
+
+        @Override
+        public Album[] newArray(int size) {
+            return new Album[size];
+        }
+    };
 
     public String getExtendData() {
         return extendData;
@@ -37,5 +61,17 @@ public class Album {
 
     public void setFlag(EnumFlag flag) {
         this.flag = flag;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(albumId);
+        parcel.writeString(albumName);
+        parcel.writeString(extendData);
     }
 }

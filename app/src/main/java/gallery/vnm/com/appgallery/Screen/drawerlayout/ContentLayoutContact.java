@@ -4,12 +4,12 @@ import android.arch.lifecycle.LifecycleOwner;
 
 import java.util.ArrayList;
 
-import gallery.vnm.com.appgallery.Screen.MainActivity;
+import gallery.vnm.com.appgallery.model.Album;
 import gallery.vnm.com.appgallery.model.DataImage;
 
 public class ContentLayoutContact {
     public interface Presenter {
-        void refresh(LifecycleOwner owner, String albumId);
+        void refresh(LifecycleOwner owner, Album album);
 
         void loadMore(LifecycleOwner owner);
 
@@ -24,5 +24,7 @@ public class ContentLayoutContact {
         void onError(Exception throwable);
 
         void onLoadMore(ArrayList<DataImage> dataImages);
+
+        void onGetAlbumSelected(Album mAlbum);
     }
 }
