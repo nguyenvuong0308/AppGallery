@@ -143,6 +143,7 @@
                 android:id="@+id/ivDownload"
                 android:layout_width="?actionBarSize"
                 android:layout_height="wrap_content"
+                android:tint="@color/color_gray_dark"
                 android:layout_alignTop="@+id/tabLayout"
                 android:layout_alignBottom="@+id/tabLayout"
                 android:layout_alignParentEnd="true"
