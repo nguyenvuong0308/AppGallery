@@ -261,28 +261,32 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-        addFragment = false;
-        mListImageAdapter.isClearOnClick = addFragment;
-        Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate);
-        mIvMenu.startAnimation(animation);
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
+        if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+            mDrawerLayout.closeDrawers();
+        } else {
+            super.onBackPressed();
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            addFragment = false;
+            mListImageAdapter.isClearOnClick = addFragment;
+            Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate);
+            mIvMenu.startAnimation(animation);
+            animation.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-            }
+                }
 
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mIvMenu.setImageResource(R.drawable.ic_menu);
-            }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    mIvMenu.setImageResource(R.drawable.ic_menu);
+                }
 
-            @Override
-            public void onAnimationRepeat(Animation animation) {
+                @Override
+                public void onAnimationRepeat(Animation animation) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     @Override

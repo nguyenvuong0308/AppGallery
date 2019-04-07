@@ -138,6 +138,16 @@
                 app:tabGravity="center"
                 app:tabIndicatorColor="@color/colorPrimary"
                 app:tabIndicatorHeight="0dp" />
+
+            <ImageView
+                android:id="@+id/ivDownload"
+                android:layout_width="?actionBarSize"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/tabLayout"
+                android:layout_alignBottom="@+id/tabLayout"
+                android:layout_alignParentEnd="true"
+                android:padding="15dp"
+                android:src="@drawable/ic_download" />
         </RelativeLayout>
     </ScrollView>
 </FrameLayout>

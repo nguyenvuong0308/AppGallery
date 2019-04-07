@@ -26,15 +26,16 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
-import gallery.vnm.com.appgallery.customview.DialogCustom;
-import gallery.vnm.com.appgallery.utils.DownloadControl;
-import gallery.vnm.com.appgallery.screen.showpostscreen.adapter.ImagePagerAdapter;
 import gallery.vnm.com.appgallery.MyApplication;
 import gallery.vnm.com.appgallery.R;
-import gallery.vnm.com.appgallery.screen.editscreen.EditActivity;
+import gallery.vnm.com.appgallery.customview.DialogCustom;
 import gallery.vnm.com.appgallery.model.DataImageTmp;
+import gallery.vnm.com.appgallery.screen.editscreen.EditActivity;
+import gallery.vnm.com.appgallery.screen.showpostscreen.adapter.ImagePagerAdapter;
+import gallery.vnm.com.appgallery.utils.DownloadControl;
 
 import static android.app.Activity.RESULT_OK;
 import static gallery.vnm.com.appgallery.screen.mainscreen.MainActivity.REQUEST_EDIT_MESSAGE;
@@ -54,6 +55,7 @@ public class ShowImageFragment extends Fragment {
     private ImageView mIvWriterThumb;
     private ImageView mIvPrivious;
     private ImageView mIvNext;
+    private ImageView mIvDownload;
     private MyApplication mMyApplication;
     private int mPositionSelected;
 
@@ -76,6 +78,7 @@ public class ShowImageFragment extends Fragment {
         mTvWriterName = mRootView.findViewById(R.id.tvWriterName);
         mTvAlbumName = mRootView.findViewById(R.id.tvAlbumName);
         mIvWriterThumb = mRootView.findViewById(R.id.ivWriterThumb);
+        mIvDownload = mRootView.findViewById(R.id.ivDownload);
         mMyApplication = (MyApplication) Objects.requireNonNull(getActivity()).getApplication();
         mImageViewPager = mRootView.findViewById(R.id.vpImage);
         mIvPrivious = mRootView.findViewById(R.id.ivPrevious);
@@ -109,6 +112,14 @@ public class ShowImageFragment extends Fragment {
             mIvPrivious.setOnClickListener(view -> {
                 if (mImageViewPager.getCurrentItem() > 0) {
                     mImageViewPager.setCurrentItem(mImageViewPager.getCurrentItem() - 1);
+                }
+            });
+
+            mIvDownload.setOnClickListener(view -> {
+                if (mDataImageTmp.getDataImage().getImages().size() > 0) {
+                    ArrayList<String> image = new ArrayList<>();
+                    image.add(mDataImageTmp.getDataImage().getImages().get(mImageViewPager.getCurrentItem()));
+                    DownloadControl.downloadFiles(getContext(), image, mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId());
                 }
             });
 
