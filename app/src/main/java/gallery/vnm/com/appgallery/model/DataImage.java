@@ -13,7 +13,7 @@ public class DataImage implements Parcelable {
     private String writerName = "";
     private String writerThumb = "";
     private String message = "";
-    private ArrayList<String> images = null;
+    private ArrayList<String> images = new ArrayList<>();
     private String postType = "";
     private String video = "";
     private EnumFlag flag;

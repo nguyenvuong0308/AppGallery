@@ -85,7 +85,7 @@
         android:layout_marginBottom="4dp"
         android:text="Album 1"
         android:textColor="@color/black"
-        android:textSize="@dimen/text_size_normal"
+        android:textSize="@dimen/text_size_small"
         app:layout_constraintBottom_toBottomOf="@+id/ivWriterThumb"
         app:layout_constraintEnd_toStartOf="@+id/ivActionMore"
         app:layout_constraintStart_toEndOf="@+id/ivWriterThumb" />

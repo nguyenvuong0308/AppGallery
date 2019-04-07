@@ -14,15 +14,15 @@
         android:supportsRtl="true"
         android:name=".MyApplication"
         android:theme="@style/AppTheme">
-        <activity android:name=".LoginActivity">
+        <activity android:name=".screen.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Screen.MainActivity" />
-        <activity android:name=".Screen.editscreen.EditActivity" />
+        <activity android:name=".screen.mainscreen.MainActivity" />
+        <activity android:name=".screen.editscreen.EditActivity" />
     </application>
 
 </manifest>

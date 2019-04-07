@@ -1,109 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_height="wrap_content"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android" >
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@android:color/white">
+        android:layout_height="wrap_content">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/header"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <de.hdodenhof.circleimageview.CircleImageView
-                android:id="@+id/ivWriterThumb"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="8dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_noimage"
-                app:civ_border_color="@color/color_gray"
-                app:civ_border_width="1dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/tvWriterName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="8dp"
-                android:text="Minh Vương"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size_normal"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toStartOf="@+id/ivActionMore"
-                app:layout_constraintStart_toEndOf="@+id/ivWriterThumb"
-                app:layout_constraintTop_toTopOf="@+id/ivWriterThumb" />
-
-            <TextView
-                android:id="@+id/tvAlbumName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="4dp"
-                android:text="Album 1"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size_normal"
-                app:layout_constraintBottom_toBottomOf="@+id/ivWriterThumb"
-                app:layout_constraintEnd_toStartOf="@+id/ivActionMore"
-                app:layout_constraintStart_toEndOf="@+id/ivWriterThumb" />
-
-            <ImageView
-                android:id="@+id/ivActionMore"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="8dp"
-                android:padding="5dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/ivWriterThumb"
-                app:srcCompat="@drawable/ic_three_dot" />
-
-            <TextView
-                android:id="@+id/tvMessage"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:background="@drawable/bg_edit"
-                android:enabled="false"
-                android:padding="4dp"
-                android:text="Messagssssssssssssssssssssssssssssssssssssssssssssssssssssssssssse"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size_normal"
-                app:layout_constraintEnd_toEndOf="@+id/ivActionMore"
-                app:layout_constraintStart_toStartOf="@+id/ivWriterThumb"
-                app:layout_constraintTop_toBottomOf="@id/ivWriterThumb" />
-        </android.support.constraint.ConstraintLayout>
-
-        <ScrollView
-            android:id="@+id/scrVp"
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/header">
+            android:background="@android:color/white">
 
-            <gallery.vnm.com.appgallery.FixViewPager
-                android:id="@+id/vpImage"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/white" />
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/ivWriterThumb"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginStart="4dp"
+                    android:layout_marginTop="8dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_noimage"
+                    app:civ_border_color="@color/color_gray"
+                    app:civ_border_width="1dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/tvWriterName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="8dp"
+                    android:text="Minh Vương"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_normal"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toStartOf="@+id/ivActionMore"
+                    app:layout_constraintStart_toEndOf="@+id/ivWriterThumb"
+                    app:layout_constraintTop_toTopOf="@+id/ivWriterThumb" />
+
+                <TextView
+                    android:id="@+id/tvAlbumName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:text="Album 1"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_small"
+                    app:layout_constraintBottom_toBottomOf="@+id/ivWriterThumb"
+                    app:layout_constraintEnd_toStartOf="@+id/ivActionMore"
+                    app:layout_constraintStart_toEndOf="@+id/ivWriterThumb" />
+
+                <ImageView
+                    android:id="@+id/ivActionMore"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginEnd="8dp"
+                    android:padding="5dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/ivWriterThumb"
+                    app:srcCompat="@drawable/ic_three_dot" />
+
+                <TextView
+                    android:id="@+id/tvMessage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_edit"
+                    android:enabled="false"
+                    android:padding="4dp"
+                    android:text="Messagssssssssssssssssssssssssssssssssssssssssssssssssssssssssssse"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_normal"
+                    app:layout_constraintEnd_toEndOf="@+id/ivActionMore"
+                    app:layout_constraintStart_toStartOf="@+id/ivWriterThumb"
+                    app:layout_constraintTop_toBottomOf="@id/ivWriterThumb" />
+            </android.support.constraint.ConstraintLayout>
+
+            <RelativeLayout
+                android:id="@+id/scrVp"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/header">
+
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <gallery.vnm.com.appgallery.customview.FixViewPager
+                        android:id="@+id/vpImage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/bg_image">
+
+                    </gallery.vnm.com.appgallery.customview.FixViewPager>
+                </ScrollView>
+
+                <ImageView
+                    android:id="@+id/ivPrevious"
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_left_arrow" />
+
+                <ImageView
+                    android:id="@+id/ivNext"
+                    android:layout_width="30dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_right_arrow" />
+            </RelativeLayout>
+
+
+            <android.support.design.widget.TabLayout
+                android:id="@+id/tabLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/bg_image">
+                android:layout_below="@+id/scrVp"
+                app:tabBackground="@drawable/tab_selector"
+                app:tabGravity="center"
+                app:tabIndicatorColor="@color/colorPrimary"
+                app:tabIndicatorHeight="0dp" />
+        </RelativeLayout>
+    </ScrollView>
+</FrameLayout>
 
-            </gallery.vnm.com.appgallery.FixViewPager>
-        </ScrollView>
-
-
-        <android.support.design.widget.TabLayout
-            android:id="@+id/tabLayout"
-            android:layout_width="match_parent"
-            app:tabIndicatorColor="@color/colorPrimary"
-            android:layout_below="@+id/scrVp"
-            android:layout_height="wrap_content"
-            app:tabBackground="@drawable/tab_selector"
-            app:tabGravity="center"
-            app:tabIndicatorHeight="0dp" />
-    </RelativeLayout>
-</ScrollView>
