@@ -119,6 +119,7 @@ public class ShowImageFragment extends Fragment {
                 if (mDataImageTmp.getDataImage().getImages().size() > 0) {
                     ArrayList<String> image = new ArrayList<>();
                     image.add(mDataImageTmp.getDataImage().getImages().get(mImageViewPager.getCurrentItem()));
+                    Toast.makeText(getContext(), "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
                     DownloadControl.downloadFiles(getContext(), image, mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId());
                 }
             });
