@@ -3,7 +3,7 @@ apply plugin: 'realm-android'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "gallery.vnm.com.appgallery"
+        applicationId "gallery.vnm.com.appgallery2"
         minSdkVersion 21
         targetSdkVersion 28
         versionCode 1
