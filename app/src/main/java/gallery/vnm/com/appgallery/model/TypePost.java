@@ -7,5 +7,6 @@ public interface TypePost {
     String VUONG2X2 = "vuong2x2";
     String VUONGFULL = "vuongFull";
     String POST_TYPE_1_AUTO = "POST_TYPE_1_AUTO";
+    String VIDEO = "1video";
 
 }

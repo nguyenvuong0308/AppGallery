@@ -24,19 +24,20 @@ import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
-import gallery.vnm.com.appgallery.customview.DialogCustom;
-import gallery.vnm.com.appgallery.utils.DownloadControl;
-import gallery.vnm.com.appgallery.screen.common.ImageAdapter;
 import gallery.vnm.com.appgallery.MyApplication;
 import gallery.vnm.com.appgallery.R;
+import gallery.vnm.com.appgallery.customview.DialogCustom;
+import gallery.vnm.com.appgallery.model.DataImageTmp;
+import gallery.vnm.com.appgallery.model.TypePost;
+import gallery.vnm.com.appgallery.model.local.MessageComment;
+import gallery.vnm.com.appgallery.screen.common.AdapterItemFactory;
+import gallery.vnm.com.appgallery.screen.common.BaseItemAdapter;
 import gallery.vnm.com.appgallery.screen.common.SpanSizeLookup1x1;
 import gallery.vnm.com.appgallery.screen.common.SpanSizeLookup1x2;
 import gallery.vnm.com.appgallery.screen.common.SpanSizeLookup1x3;
 import gallery.vnm.com.appgallery.screen.common.SpanSizeLookup2x1;
 import gallery.vnm.com.appgallery.screen.common.SpanSizeLookup2x2;
-import gallery.vnm.com.appgallery.model.TypePost;
-import gallery.vnm.com.appgallery.model.DataImage;
-import gallery.vnm.com.appgallery.model.local.MessageComment;
+import gallery.vnm.com.appgallery.utils.DownloadControl;
 import io.realm.Realm;
 
 public class EditActivity extends AppCompatActivity {
@@ -48,7 +49,7 @@ public class EditActivity extends AppCompatActivity {
     private TextView mTvSave;
     private TextView mTvWriterName;
     private TextView mTvAlbumName;
-    private DataImage mDataImage;
+    private DataImageTmp mDataImage;
     private MyApplication mMyApplication;
 
 
@@ -75,7 +76,7 @@ public class EditActivity extends AppCompatActivity {
 
     private void initData() {
         mDataImage = mMyApplication.getDataImageTmp();
-        Glide.with(this).load(mDataImage.getWriterThumb()).listener(new RequestListener<Drawable>() {
+        Glide.with(this).load(mDataImage.getDataImage().getWriterThumb()).listener(new RequestListener<Drawable>() {
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                 mIvWriterThumb.setImageResource(R.drawable.ic_noimage);
@@ -87,54 +88,17 @@ public class EditActivity extends AppCompatActivity {
                 return false;
             }
         }).into(mIvWriterThumb);
-        mTvWriterName.setText(TextUtils.isEmpty(mDataImage.getWriterName()) ? "Unknown" : mDataImage.getWriterName());
+        mTvWriterName.setText(TextUtils.isEmpty(mDataImage.getDataImage().getWriterName()) ? "Unknown" : mDataImage.getDataImage().getWriterName());
         mTvAlbumName.setText(TextUtils.isEmpty(mMyApplication.getAlbumName()) ? "Unknown" : mMyApplication.getAlbumName());
-        mEdtMessage.setText(mDataImage.getMessage());
+        mEdtMessage.setText(mDataImage.getDataImage().getMessage());
         mEdtMessage.setSelection(mEdtMessage.getText().toString().length());
         setupRecyclerView();
     }
 
     private void setupRecyclerView() {
-        GridLayoutManager layoutManager;
-        ImageAdapter imageAdapter = new ImageAdapter(this, mDataImage.getImages(), mDataImage.getPostType());
-        switch (mDataImage.getPostType()) {
-            case TypePost.VUONG2X1:
-                layoutManager = new GridLayoutManager(this, 2);
-                imageAdapter.setMaxSize(3);
-                layoutManager.setSpanSizeLookup(new SpanSizeLookup2x1());
-                break;
-            case TypePost.VUONG1X3:
-                layoutManager = new GridLayoutManager(this, 3);
-                imageAdapter.setMaxSize(4);
-                layoutManager.setSpanSizeLookup(new SpanSizeLookup1x3());
-                break;
-            case TypePost.VUONG1X2:
-                layoutManager = new GridLayoutManager(this, 2);
-                imageAdapter.setMaxSize(3);
-                layoutManager.setSpanSizeLookup(new SpanSizeLookup1x2());
-                break;
-            case TypePost.VUONG2X2:
-                imageAdapter.setMaxSize(4);
-                layoutManager = new GridLayoutManager(this, 2);
-                layoutManager.setSpanSizeLookup(new SpanSizeLookup2x2());
-                break;
-            case TypePost.VUONGFULL:
-                imageAdapter.setMaxSize(1);
-                layoutManager = new GridLayoutManager(this, 1);
-                layoutManager.setSpanSizeLookup(new SpanSizeLookup1x1());
-                break;
-            case TypePost.POST_TYPE_1_AUTO:
-                imageAdapter.setMaxSize(1);
-                layoutManager = new GridLayoutManager(this, 1);
-                layoutManager.setSpanSizeLookup(new SpanSizeLookup1x1());
-                break;
-            default:
-                imageAdapter.setMaxSize(2);
-                layoutManager = new GridLayoutManager(this, 2);
-                break;
-        }
-        mRcvImages.setAdapter(imageAdapter);
-        mRcvImages.setLayoutManager(layoutManager);
+        AdapterItemFactory adapterItemFactory = new AdapterItemFactory(this, mDataImage.getDataImage());
+        mRcvImages.setAdapter(adapterItemFactory.getBaseItemAdapter());
+        mRcvImages.setLayoutManager(adapterItemFactory.getLayoutManager());
         mRcvImages.setHasFixedSize(true);
     }
 
@@ -145,7 +109,7 @@ public class EditActivity extends AppCompatActivity {
         });
         mTvSave.setOnClickListener(v -> {
             Realm realm = Realm.getDefaultInstance();
-            MessageComment messageComment = realm.where(MessageComment.class).equalTo("textClientId", mDataImage.getTextClientId()).findFirst();
+            MessageComment messageComment = realm.where(MessageComment.class).equalTo("textClientId", mDataImage.getDataImage().getTextClientId()).findFirst();
             if (messageComment != null) {
                 realm.executeTransaction(realm1 -> {
                     messageComment.setMessageComment(mEdtMessage.getText().toString());
@@ -160,7 +124,7 @@ public class EditActivity extends AppCompatActivity {
                         nextId = currentIdNum.intValue() + 1;
                     }
                     MessageComment newMessageComment = new MessageComment();
-                    newMessageComment.setTextClientId(mDataImage.getTextClientId());
+                    newMessageComment.setTextClientId(mDataImage.getDataImage().getTextClientId());
                     newMessageComment.setId(nextId);
                     newMessageComment.setMessageComment(mEdtMessage.getText().toString());
                     realm.insertOrUpdate(newMessageComment);
@@ -190,14 +154,14 @@ public class EditActivity extends AppCompatActivity {
                 }
                 break;
                 case R.id.download: {
-                    DownloadControl.downloadFiles(this, mDataImage.getImages(), mMyApplication.getAlbumName() + "_" + mDataImage.getTextClientId());
+                    DownloadControl.downloadFiles(this, mDataImage.getDataImage().getImages(), mMyApplication.getAlbumName() + "_" + mDataImage.getDataImage().getTextClientId());
                     Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
                 }
                 break;
                 case R.id.hint: {
                     DialogCustom custom = new DialogCustom(this);
                     custom.setTitle("Hint!");
-                    custom.setMessage(mDataImage.getHint());
+                    custom.setMessage(mDataImage.getDataImage().getHint());
                     custom.setPositiveAction("OK");
                     custom.show();
                 }
@@ -206,7 +170,7 @@ public class EditActivity extends AppCompatActivity {
                 case R.id.tag: {
                     DialogCustom custom = new DialogCustom(this);
                     custom.setTitle("Tag!");
-                    custom.setMessage(mDataImage.getTag());
+                    custom.setMessage(mDataImage.getDataImage().getTag());
                     custom.setPositiveAction("OK");
                     custom.show();
                 }

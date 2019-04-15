@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,17 +24,19 @@ import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
 
-import gallery.vnm.com.appgallery.utils.OnItemClick;
 import gallery.vnm.com.appgallery.R;
+import gallery.vnm.com.appgallery.model.Album;
+import gallery.vnm.com.appgallery.model.DataImage;
+import gallery.vnm.com.appgallery.model.TypePost;
+import gallery.vnm.com.appgallery.screen.common.AdapterItemFactory;
+import gallery.vnm.com.appgallery.screen.common.BaseItemAdapter;
 import gallery.vnm.com.appgallery.screen.common.ImageAdapter;
 import gallery.vnm.com.appgallery.screen.common.SpanSizeLookup1x1;
 import gallery.vnm.com.appgallery.screen.common.SpanSizeLookup1x2;
 import gallery.vnm.com.appgallery.screen.common.SpanSizeLookup1x3;
 import gallery.vnm.com.appgallery.screen.common.SpanSizeLookup2x1;
 import gallery.vnm.com.appgallery.screen.common.SpanSizeLookup2x2;
-import gallery.vnm.com.appgallery.model.TypePost;
-import gallery.vnm.com.appgallery.model.Album;
-import gallery.vnm.com.appgallery.model.DataImage;
+import gallery.vnm.com.appgallery.utils.OnItemClick;
 
 /**
  * Created by nguye on 3/6/2019.
@@ -45,7 +48,6 @@ public class ListImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private Context mContext;
     private ArrayList<DataImage> mDataImages;
     private OnItemClick<DataImage> mOnItemClick;
-    public boolean isClearOnClick = false;
     private OnItemClick.OnItemClick2<DataImage> mEditOnClick;
     private int totalItemCount;
     private int lastVisibleItem;
@@ -114,62 +116,25 @@ public class ListImageAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                     return false;
                 }
             }).into(listImageHolder.mIvWriterThumb);
-            GridLayoutManager layoutManager;
-            ImageAdapter imageAdapter = new ImageAdapter(mContext, dataImage.getImages(), dataImage.getPostType());
-            switch (dataImage.getPostType()) {
-                case TypePost.VUONG2X1:
-                    layoutManager = new GridLayoutManager(mContext, 2);
-                    imageAdapter.setMaxSize(3);
-                    layoutManager.setSpanSizeLookup(new SpanSizeLookup2x1());
-                    break;
-                case TypePost.VUONG1X3:
-                    layoutManager = new GridLayoutManager(mContext, 3);
-                    imageAdapter.setMaxSize(4);
-                    layoutManager.setSpanSizeLookup(new SpanSizeLookup1x3());
-                    break;
-                case TypePost.VUONG1X2:
-                    layoutManager = new GridLayoutManager(mContext, 2);
-                    imageAdapter.setMaxSize(3);
-                    layoutManager.setSpanSizeLookup(new SpanSizeLookup1x2());
-                    break;
-                case TypePost.VUONG2X2:
-                    imageAdapter.setMaxSize(4);
-                    layoutManager = new GridLayoutManager(mContext, 2);
-                    layoutManager.setSpanSizeLookup(new SpanSizeLookup2x2());
-                    break;
-                case TypePost.VUONGFULL:
-                    imageAdapter.setMaxSize(1);
-                    layoutManager = new GridLayoutManager(mContext, 1);
-                    layoutManager.setSpanSizeLookup(new SpanSizeLookup1x1());
-                    break;
-                case TypePost.POST_TYPE_1_AUTO:
-                    imageAdapter.setMaxSize(1);
-                    layoutManager = new GridLayoutManager(mContext, 1);
-                    layoutManager.setSpanSizeLookup(new SpanSizeLookup1x1());
-                    break;
-                default:
-                    imageAdapter.setMaxSize(2);
-                    layoutManager = new GridLayoutManager(mContext, 2);
-                    break;
 
-            }
-            imageAdapter.setImageOnClick((item, position1) ->{
-                if (mOnItemClick != null && !isClearOnClick) {
+            AdapterItemFactory adapterItemFactory = new AdapterItemFactory(mContext, dataImage);
+            adapterItemFactory.getBaseItemAdapter().setItemOnclick((item, position1) -> {
+                if (mOnItemClick != null) {
                     mOnItemClick.onClick(dataImage, position);
                 }
             });
             listImageHolder.itemView.setOnClickListener(view -> {
-                if (mOnItemClick != null && !isClearOnClick) {
+                if (mOnItemClick != null) {
                     mOnItemClick.onClick(dataImage, position);
                 }
-             });
+            });
             listImageHolder.mIvActionMore.setOnClickListener(v -> {
                 if (mEditOnClick != null) {
                     mEditOnClick.onClick(dataImage, listImageHolder.mIvActionMore, position);
                 }
             });
-            listImageHolder.mRcvImage.setAdapter(imageAdapter);
-            listImageHolder.mRcvImage.setLayoutManager(layoutManager);
+            listImageHolder.mRcvImage.setAdapter(adapterItemFactory.getBaseItemAdapter());
+            listImageHolder.mRcvImage.setLayoutManager(adapterItemFactory.getLayoutManager());
             listImageHolder.mRcvImage.setHasFixedSize(true);
         }
     }

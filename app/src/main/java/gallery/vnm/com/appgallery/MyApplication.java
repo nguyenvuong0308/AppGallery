@@ -3,11 +3,12 @@ package gallery.vnm.com.appgallery;
 import android.app.Application;
 
 import gallery.vnm.com.appgallery.model.DataImage;
+import gallery.vnm.com.appgallery.model.DataImageTmp;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;
 
 public class MyApplication extends Application {
-    private DataImage dataImageTmp;
+    private DataImageTmp dataImageTmp;
     private String messageChange;
     private String albumName;
     private int position;
@@ -19,11 +20,11 @@ public class MyApplication extends Application {
         Realm.setDefaultConfiguration(config);
     }
 
-    public DataImage getDataImageTmp() {
+    public DataImageTmp getDataImageTmp() {
         return dataImageTmp;
     }
 
-    public void setDataImageTmp(DataImage dataImageTmp) {
+    public void setDataImageTmp(DataImageTmp dataImageTmp) {
         this.dataImageTmp = dataImageTmp;
     }
 

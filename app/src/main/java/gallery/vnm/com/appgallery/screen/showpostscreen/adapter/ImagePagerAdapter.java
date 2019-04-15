@@ -14,12 +14,13 @@ import com.github.chrisbanes.photoview.PhotoView;
 import java.util.ArrayList;
 
 import gallery.vnm.com.appgallery.R;
+import gallery.vnm.com.appgallery.model.DataImage;
 
 public class ImagePagerAdapter extends PagerAdapter {
     private Context mContext;
-    private ArrayList<String> mImagesUrl;
+    private ArrayList<DataImage.Image> mImagesUrl;
 
-    public ImagePagerAdapter(Context mContext, ArrayList<String> mImagesUrl) {
+    public ImagePagerAdapter(Context mContext, ArrayList<DataImage.Image> mImagesUrl) {
         this.mContext = mContext;
         this.mImagesUrl = mImagesUrl;
     }
@@ -33,7 +34,7 @@ public class ImagePagerAdapter extends PagerAdapter {
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         LayoutInflater inflater = LayoutInflater.from(mContext);
         PhotoView imageView = (PhotoView) inflater.inflate(R.layout.item_image_full, container, false);
-        Glide.with(mContext).load(mImagesUrl.get(position)).into(imageView);
+        Glide.with(mContext).load(mImagesUrl.get(position).getUrl()).into(imageView);
         imageView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
         imageView.setMinimumScale(0.5f);
         container.addView(imageView);

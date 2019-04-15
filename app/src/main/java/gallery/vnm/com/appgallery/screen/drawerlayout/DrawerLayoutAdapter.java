@@ -43,10 +43,8 @@ public class DrawerLayoutAdapter extends RecyclerView.Adapter<DrawerLayoutAdapte
     public void onBindViewHolder(@NonNull MenuHolder holder, int position) {
         holder.mTvAlbumName.setText(mAlbums.get(position).getAlbumName());
         if (position == positionSelected) {
-//            holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.colorAccent));
             holder.mTvAlbumName.setTextColor(mContext.getResources().getColor(R.color.colorPrimaryDark));
         } else {
-//            holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.white));
             holder.mTvAlbumName.setTextColor(mContext.getResources().getColor(R.color.black));
         }
         holder.itemView.setOnClickListener(v -> {

@@ -55,7 +55,20 @@ public class ApiAdapter {
                             String imageStr = objects.get(i).toString();
                             if (!imageStr.isEmpty()) {
                                 String images[] = imageStr.split("\n");
-                                dataImage.setImages(images);
+                                ArrayList<DataImage.Image> imageArrayList = new ArrayList<>();
+                                for (String img : images) {
+                                    if (img.contains("http")) {
+                                        int lastIndex = img.indexOf(" ");
+                                        if (lastIndex != -1) {
+                                            DataImage.Image image = new DataImage.Image(img.substring(0,lastIndex), img.substring(lastIndex + 1));
+                                            imageArrayList.add(image);
+                                        } else {
+                                            DataImage.Image image = new DataImage.Image(img);
+                                            imageArrayList.add(image);
+                                        }
+                                    }
+                                }
+                                dataImage.setImages(imageArrayList);
                             }
                             break;
                         case DataImageColumn.MESSAGE:

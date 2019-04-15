@@ -1,28 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white">
 
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
+        android:id="@+id/action_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="?actionBarSize"
+        android:background="@color/colorPrimary"
+        android:orientation="horizontal">
 
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        <ImageView
+            android:id="@+id/ivBack"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="5dp"
+            android:padding="15dp"
+            android:src="@drawable/ic_arrow" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="10dp"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/text_size_actionbar" />
+    </LinearLayout>
+
+    <android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/action_bar">
+
+        <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/white">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white" />
-
             <android.support.constraint.ConstraintLayout
                 android:id="@+id/header"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/ivWriterThumb"
@@ -74,7 +100,7 @@
                     android:padding="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/ivWriterThumb"
-                    app:srcCompat="@drawable/ic_three_dot" />
+                    android:src="@drawable/ic_three_dot" />
 
                 <TextView
                     android:id="@+id/tvMessage"
@@ -91,65 +117,47 @@
                     app:layout_constraintTop_toBottomOf="@id/ivWriterThumb" />
             </android.support.constraint.ConstraintLayout>
 
-            <RelativeLayout
-                android:id="@+id/scrVp"
-                android:layout_width="match_parent"
-
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/header">
-
-                <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <gallery.vnm.com.appgallery.customview.FixViewPager
-                        android:id="@+id/vpImage"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_image">
-
-                    </gallery.vnm.com.appgallery.customview.FixViewPager>
-                </ScrollView>
-
-                <ImageView
-                    android:id="@+id/ivPrevious"
-                    android:layout_width="30dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_left_arrow" />
-
-                <ImageView
-                    android:id="@+id/ivNext"
-                    android:layout_width="30dp"
-                    android:layout_height="40dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerVertical="true"
-                    android:src="@drawable/ic_right_arrow" />
-            </RelativeLayout>
-
-
-            <android.support.design.widget.TabLayout
-                android:id="@+id/tabLayout"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rcvImages"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/scrVp"
-                app:tabBackground="@drawable/tab_selector"
-                app:tabGravity="center"
-                app:tabIndicatorColor="@color/colorPrimary"
-                app:tabIndicatorHeight="0dp" />
+                android:nestedScrollingEnabled="false"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/header"
+                tools:listitem="@layout/item_image_commment" />
+
+            <view
+                android:id="@+id/youtubeView"
+                class="com.google.android.youtube.player.YouTubePlayerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/header"
+                app:layout_constraintTop_toBottomOf="@+id/header" />
+
+            <ImageView
+
+                android:id="@+id/ivPlay"
+                android:layout_width="?actionBarSize"
+                android:layout_height="?actionBarSize"
+                android:src="@drawable/ic_play_2"
+                app:layout_constraintBottom_toBottomOf="@id/youtubeView"
+                app:layout_constraintEnd_toEndOf="@id/youtubeView"
+                app:layout_constraintStart_toStartOf="@id/youtubeView"
+                app:layout_constraintTop_toTopOf="@id/youtubeView" />
 
             <ImageView
                 android:id="@+id/ivDownload"
                 android:layout_width="?actionBarSize"
-                android:layout_height="wrap_content"
-                android:tint="@color/color_gray_dark"
-                android:layout_alignTop="@+id/tabLayout"
-                android:layout_alignBottom="@+id/tabLayout"
-                android:layout_alignParentEnd="true"
+                android:layout_height="?actionBarSize"
+                android:layout_below="@+id/youtubeView"
                 android:padding="15dp"
-                android:src="@drawable/ic_download" />
-        </RelativeLayout>
-    </ScrollView>
-</FrameLayout>
+                android:src="@drawable/ic_download"
+                android:tint="@color/color_gray_dark"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/youtubeView" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</RelativeLayout>
 

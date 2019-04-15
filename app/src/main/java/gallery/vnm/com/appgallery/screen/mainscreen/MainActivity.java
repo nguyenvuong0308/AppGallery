@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -32,33 +31,33 @@ import com.google.api.services.sheets.v4.SheetsScopes;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import gallery.vnm.com.appgallery.utils.AppPreference;
-import gallery.vnm.com.appgallery.screen.mainscreen.adapter.ListImageAdapter;
-import gallery.vnm.com.appgallery.screen.LoginActivity;
-import gallery.vnm.com.appgallery.screen.showpostscreen.ShowImageFragment;
-import gallery.vnm.com.appgallery.customview.DialogCustom;
-import gallery.vnm.com.appgallery.utils.DownloadControl;
 import gallery.vnm.com.appgallery.MyApplication;
 import gallery.vnm.com.appgallery.R;
+import gallery.vnm.com.appgallery.customview.DialogCustom;
+import gallery.vnm.com.appgallery.model.Album;
+import gallery.vnm.com.appgallery.model.DataImage;
+import gallery.vnm.com.appgallery.model.DataImageTmp;
+import gallery.vnm.com.appgallery.model.network.RequestApiNetwork;
+import gallery.vnm.com.appgallery.screen.LoginActivity;
 import gallery.vnm.com.appgallery.screen.drawerlayout.ContentLayoutContact;
 import gallery.vnm.com.appgallery.screen.drawerlayout.ContentLayoutPresenter;
 import gallery.vnm.com.appgallery.screen.drawerlayout.DrawerLayoutAdapter;
 import gallery.vnm.com.appgallery.screen.drawerlayout.DrawerLayoutContract;
 import gallery.vnm.com.appgallery.screen.drawerlayout.DrawerLayoutPresenter;
 import gallery.vnm.com.appgallery.screen.editscreen.EditActivity;
-import gallery.vnm.com.appgallery.model.Album;
-import gallery.vnm.com.appgallery.model.DataImage;
-import gallery.vnm.com.appgallery.model.DataImageTmp;
-import gallery.vnm.com.appgallery.model.network.RequestApiNetwork;
+import gallery.vnm.com.appgallery.screen.mainscreen.adapter.ListImageAdapter;
+import gallery.vnm.com.appgallery.screen.showpostscreen.ShowImageActivity;
+import gallery.vnm.com.appgallery.utils.AppPreference;
+import gallery.vnm.com.appgallery.utils.DownloadControl;
 
 /**
  * Created by nguye on 3/6/2019.
  */
 
 public class MainActivity extends AppCompatActivity implements DrawerLayoutContract.View, ContentLayoutContact.View {
+    public static final int REQUEST_EDIT_MESSAGE = 123;
     private static final String[] SCOPES = {SheetsScopes.SPREADSHEETS_READONLY};
     private static final int REQUEST_AUTHORIZATION = 12345;
-    public static final int REQUEST_EDIT_MESSAGE = 123;
     private RecyclerView mRcvMenu;
     private RecyclerView mRcvListImage;
     private DrawerLayoutContract.Presenter mDrawerLayoutPresenter;
@@ -71,7 +70,6 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     private DrawerLayout mDrawerLayout;
     private GoogleAccountCredential mCredential;
     private MyApplication mMyApplication;
-    private boolean addFragment = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -121,14 +119,10 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
 
         mDrawerLayoutPresenter.loadAlbums(this);
         mIvMenu.setOnClickListener(v -> {
-            if (addFragment) {
-                 onBackPressed();
+            if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
+                mDrawerLayout.closeDrawer(Gravity.START);
             } else {
-                if (mDrawerLayout.isDrawerOpen(Gravity.START)) {
-                    mDrawerLayout.closeDrawer(Gravity.START);
-                } else {
-                    mDrawerLayout.openDrawer(Gravity.START);
-                }
+                mDrawerLayout.openDrawer(Gravity.START);
             }
         });
         mListImageAdapter.setLoadMore(() -> {
@@ -175,29 +169,11 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     }
 
     private void onPostItemClick(DataImage item, int position) {
-        addFragment = true;
-        mListImageAdapter.isClearOnClick = addFragment;
         DataImageTmp dataImageTmp = new DataImageTmp(item, mDrawerLayoutAdapter.getMenuSelected());
-        replaceFragment(ShowImageFragment.newInstance(dataImageTmp, position));
-        Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate);
-        mIvMenu.startAnimation(animation);
-        animation.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                mIvMenu.setImageResource(R.drawable.ic_arrow);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        Intent intent = new Intent(this, ShowImageActivity.class);
+        mMyApplication.setDataImageTmp(dataImageTmp);
+        mMyApplication.setPosition(position);
+        startActivityForResult(intent, REQUEST_EDIT_MESSAGE);
     }
 
     private void showPopupMenu(DataImage item, View view, int position) {
@@ -206,7 +182,8 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         popupMenu.setOnMenuItemClickListener(item2 -> {
             switch (item2.getItemId()) {
                 case R.id.edit: {
-                    mMyApplication.setDataImageTmp(item);
+                    DataImageTmp dataImageTmp = new DataImageTmp(item, mDrawerLayoutAdapter.getMenuSelected());
+                    mMyApplication.setDataImageTmp(dataImageTmp);
                     mMyApplication.setPosition(position);
                     mMyApplication.setAlbumName(mDrawerLayoutAdapter.getMenuSelected().getAlbumName());
                     startActivityForResult(new Intent(MainActivity.this, EditActivity.class), REQUEST_EDIT_MESSAGE);
@@ -265,27 +242,6 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
             mDrawerLayout.closeDrawers();
         } else {
             super.onBackPressed();
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
-            addFragment = false;
-            mListImageAdapter.isClearOnClick = addFragment;
-            Animation animation = AnimationUtils.loadAnimation(MainActivity.this, R.anim.rotate);
-            mIvMenu.startAnimation(animation);
-            animation.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mIvMenu.setImageResource(R.drawable.ic_menu);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
         }
     }
 
@@ -356,14 +312,6 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         custom.show();
     }
 
-    public void replaceFragment(Fragment fragment) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.setCustomAnimations(android.R.anim.fade_in, android.R.anim.fade_out, android.R.anim.fade_in, android.R.anim.fade_out);
-        transaction.replace(R.id.content_frame, fragment);
-        transaction.addToBackStack(fragment.getClass().getSimpleName());
-        transaction.commit();
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -378,10 +326,6 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
 
             case REQUEST_EDIT_MESSAGE: {
                 if (resultCode == RESULT_OK) {
-                    Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.content_frame);
-                    if (fragment instanceof ShowImageFragment) {
-                        fragment.onActivityResult(requestCode, resultCode, data);
-                    }
                     mListImageAdapter.updateMessageItem(mMyApplication.getPosition(), mMyApplication.getMessageChange());
                 }
             }
