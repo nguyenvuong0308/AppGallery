@@ -2,7 +2,6 @@ package gallery.vnm.com.appgallery;
 
 import android.app.Application;
 
-import gallery.vnm.com.appgallery.model.DataImage;
 import gallery.vnm.com.appgallery.model.DataImageTmp;
 import io.realm.Realm;
 import io.realm.RealmConfiguration;

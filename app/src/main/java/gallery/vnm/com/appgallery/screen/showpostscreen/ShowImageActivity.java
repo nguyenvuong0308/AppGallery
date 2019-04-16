@@ -118,7 +118,9 @@ public class ShowImageActivity extends YouTubeBaseActivity {
                 ArrayList<DataImage.Image> image = new ArrayList<>();
                 image.add(item);
                 Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
-                DownloadControl.downloadFiles(this, image, mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId());
+                DownloadControl.downloadFiles(this, image, mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), () -> {
+                    Toast.makeText(this, "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+                });
             });
         }
 
@@ -149,8 +151,10 @@ public class ShowImageActivity extends YouTubeBaseActivity {
             mIvPlay.setVisibility(View.GONE);
         });
         mIvDownload.setOnClickListener(view -> {
-            DownloadControl.downloadFile(this, mDataImageTmp.getDataImage().getVideoInfo().getUrlDownload(), mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId());
             Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
+            DownloadControl.downloadFile(this, mDataImageTmp.getDataImage().getVideoInfo().getUrlDownload(), mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), () -> {
+                Toast.makeText(this, "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+            });
         });
 
     }
@@ -177,8 +181,10 @@ public class ShowImageActivity extends YouTubeBaseActivity {
                 }
                 break;
                 case R.id.download: {
-                    DownloadControl.downloadFiles(Objects.requireNonNull(this), mDataImageTmp.getDataImage().getImages(), mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId());
                     Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
+                    DownloadControl.downloadFiles(Objects.requireNonNull(this), mDataImageTmp.getDataImage().getImages(), mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), () -> {
+                        Toast.makeText(this, "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+                    });
                 }
                 break;
 

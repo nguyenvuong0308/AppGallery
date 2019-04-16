@@ -199,8 +199,10 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
                 }
                 break;
                 case R.id.download: {
-                    DownloadControl.downloadFiles(this, item.getImages(), mDrawerLayoutAdapter.getMenuSelected().getAlbumName() + "_" + item.getTextClientId());
                     Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
+                    DownloadControl.downloadFiles(this, item.getImages(), mDrawerLayoutAdapter.getMenuSelected().getAlbumName() + "_" + item.getTextClientId(), () -> {
+                        Toast.makeText(this, "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+                    });
                 }
                 break;
 
