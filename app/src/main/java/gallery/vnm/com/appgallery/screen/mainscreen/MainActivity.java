@@ -112,7 +112,6 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
             if (item.getFlag() == EnumFlag.LINK) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getExtendData()));
                 startActivity(browserIntent);
-                finish();
             } else {
                 mContentLayoutPresenter.refresh(this, item);
                 mDrawerLayout.closeDrawer(Gravity.START);
