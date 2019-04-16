@@ -1,13 +1,17 @@
 package gallery.vnm.com.appgallery.screen.mainscreen;
 
+import android.Manifest;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -37,6 +41,7 @@ import gallery.vnm.com.appgallery.customview.DialogCustom;
 import gallery.vnm.com.appgallery.model.Album;
 import gallery.vnm.com.appgallery.model.DataImage;
 import gallery.vnm.com.appgallery.model.DataImageTmp;
+import gallery.vnm.com.appgallery.model.EnumFlag;
 import gallery.vnm.com.appgallery.model.network.RequestApiNetwork;
 import gallery.vnm.com.appgallery.screen.LoginActivity;
 import gallery.vnm.com.appgallery.screen.drawerlayout.ContentLayoutContact;
@@ -58,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     public static final int REQUEST_EDIT_MESSAGE = 123;
     private static final String[] SCOPES = {SheetsScopes.SPREADSHEETS_READONLY};
     private static final int REQUEST_AUTHORIZATION = 12345;
+    private static final int REQUEST_CALL = 123456;
     private RecyclerView mRcvMenu;
     private RecyclerView mRcvListImage;
     private DrawerLayoutContract.Presenter mDrawerLayoutPresenter;
@@ -65,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     private DrawerLayoutAdapter mDrawerLayoutAdapter;
     private ListImageAdapter mListImageAdapter;
     private ImageView mIvMenu;
+    private ImageView mIvHotLine;
     private TextView mTvWarning;
     private SwipeRefreshLayout mSwipeRefreshLayout;
     private DrawerLayout mDrawerLayout;
@@ -102,8 +109,14 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         mRcvMenu.setLayoutManager(new LinearLayoutManager(this));
         mRcvMenu.setHasFixedSize(true);
         mDrawerLayoutAdapter.setMenuOnItemClick((item, position) -> {
-            mContentLayoutPresenter.refresh(this, item);
-            mDrawerLayout.closeDrawer(Gravity.START);
+            if (item.getFlag() == EnumFlag.LINK) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(item.getExtendData()));
+                startActivity(browserIntent);
+                finish();
+            } else {
+                mContentLayoutPresenter.refresh(this, item);
+                mDrawerLayout.closeDrawer(Gravity.START);
+            }
         });
 
         /*Khởi tạo list bài post*/
@@ -138,8 +151,21 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
             }
         });
 
+        mIvHotLine.setOnClickListener(v -> {
+            callHotLine();
+        });
         /*Lắng nghe sự kiện đóng mở của drawer layout*/
         setEventListenerDrawerLayout();
+    }
+
+    private void callHotLine() {
+        Intent callIntent = new Intent(Intent.ACTION_CALL);
+        callIntent.setData(Uri.parse("tel:0942587333"));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+            String request[] = new String[1];
+            request[0] = Manifest.permission.CALL_PHONE;
+            requestPermissions(request, REQUEST_CALL);
+        } else startActivity(callIntent);
     }
 
     private void setEventListenerDrawerLayout() {
@@ -231,6 +257,7 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
 
     private void initView() {
         mRcvMenu = findViewById(R.id.rcvTest);
+        mIvHotLine = findViewById(R.id.ivHotLine);
         mSwipeRefreshLayout = findViewById(R.id.sRLayout);
         mIvMenu = findViewById(R.id.ivMenu);
         mTvWarning = findViewById(R.id.tvWarning);
@@ -331,6 +358,14 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
                     mListImageAdapter.updateMessageItem(mMyApplication.getPosition(), mMyApplication.getMessageChange());
                 }
             }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CALL && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            callHotLine();
         }
     }
 
