@@ -118,8 +118,16 @@ public class ShowImageActivity extends YouTubeBaseActivity {
                 ArrayList<DataImage.Image> image = new ArrayList<>();
                 image.add(item);
                 Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
-                DownloadControl.downloadFiles(this, image, mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), () -> {
-                    Toast.makeText(this, "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+                DownloadControl.downloadFiles(this, image, mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), new DownloadControl.OnDownloadCallBack() {
+                    @Override
+                    public void onLimitDownload() {
+                        Toast.makeText(getApplicationContext(), "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+                    }
+
+                    @Override
+                    public void onDownloadError() {
+                        Toast.makeText(getApplicationContext(), "Không thể tải về!", Toast.LENGTH_SHORT).show();
+                    }
                 });
             });
         }
@@ -152,8 +160,16 @@ public class ShowImageActivity extends YouTubeBaseActivity {
         });
         mIvDownload.setOnClickListener(view -> {
             Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
-            DownloadControl.downloadFile(this, mDataImageTmp.getDataImage().getVideoInfo().getUrlDownload(), mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), () -> {
-                Toast.makeText(this, "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+            DownloadControl.downloadFile(this, mDataImageTmp.getDataImage().getVideoInfo().getUrlDownload(), mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), new DownloadControl.OnDownloadCallBack() {
+                @Override
+                public void onLimitDownload() {
+                    Toast.makeText(getApplicationContext(), "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onDownloadError() {
+                    Toast.makeText(getApplicationContext(), "Không thể tải về!", Toast.LENGTH_SHORT).show();
+                }
             });
         });
 
@@ -182,9 +198,17 @@ public class ShowImageActivity extends YouTubeBaseActivity {
                 break;
                 case R.id.download: {
                     Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
-                    DownloadControl.downloadFiles(Objects.requireNonNull(this), mDataImageTmp.getDataImage().getImages(), mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), () -> {
-                        Toast.makeText(this, "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
-                    });
+                    DownloadControl.downloadFiles(Objects.requireNonNull(this), mDataImageTmp.getDataImage().getImages(), mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), new DownloadControl.OnDownloadCallBack() {
+                        @Override
+                        public void onLimitDownload() {
+                            Toast.makeText(getApplicationContext(), "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onDownloadError() {
+                            Toast.makeText(getApplicationContext(), "Không thể tải về!", Toast.LENGTH_SHORT).show();
+                        }
+                });
                 }
                 break;
 
@@ -223,6 +247,7 @@ public class ShowImageActivity extends YouTubeBaseActivity {
             }
         }
     }
+
 
     @Override
     public void onBackPressed() {
