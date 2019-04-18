@@ -52,6 +52,7 @@ public class ShowImageActivity extends YouTubeBaseActivity {
     private TextView mTvWriterName;
     private TextView mTvAlbumName;
     private ImageView mIvWriterThumb;
+    private ImageView mIvVideoThumb;
     private ImageView mIvDownload;
     private ImageView mIvPlay;
     private ImageView mIvBack;
@@ -72,6 +73,7 @@ public class ShowImageActivity extends YouTubeBaseActivity {
         mTvWriterName = findViewById(R.id.tvWriterName);
         mTvAlbumName = findViewById(R.id.tvAlbumName);
         mIvWriterThumb = findViewById(R.id.ivWriterThumb);
+        mIvVideoThumb = findViewById(R.id.ivVideoThumb);
         mIvBack = findViewById(R.id.ivBack);
         mIvDownload = findViewById(R.id.ivDownload);
         mIvPlay = findViewById(R.id.ivPlay);
@@ -82,6 +84,7 @@ public class ShowImageActivity extends YouTubeBaseActivity {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 youTubePlayer.loadVideo(mDataImageTmp.getDataImage().getVideoInfo().getIdVideoYoutube());
+                mIvVideoThumb.setVisibility(View.GONE);
                 Log.d(TAG, "Success");
             }
 
@@ -104,7 +107,10 @@ public class ShowImageActivity extends YouTubeBaseActivity {
             mRcvImage.setVisibility(View.GONE);
             youTubePlayerView.setVisibility(View.VISIBLE);
             mIvPlay.setVisibility(View.VISIBLE);
+            mIvVideoThumb.setVisibility(View.VISIBLE);
+            Glide.with(this).load(mDataImageTmp.getDataImage().getVideoInfo().getUrlThumb()).into(mIvVideoThumb);
         } else {
+            mIvVideoThumb.setVisibility(View.GONE);
             mIvDownload.setVisibility(View.GONE);
             youTubePlayerView.setVisibility(View.GONE);
             mIvPlay.setVisibility(View.GONE);
@@ -152,7 +158,10 @@ public class ShowImageActivity extends YouTubeBaseActivity {
         });
         mIvDownload.setOnClickListener(view -> {
             Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
-            DownloadControl.downloadFile(this, mDataImageTmp.getDataImage().getVideoInfo().getUrlDownload(), mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), () -> {
+            ArrayList<String> urls = new ArrayList<>();
+            urls.add(mDataImageTmp.getDataImage().getVideoInfo().getUrlDownload());
+            urls.add(mDataImageTmp.getDataImage().getVideoInfo().getUrlThumb());
+            DownloadControl.downloadFileByUrls(this, urls, mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), () -> {
                 Toast.makeText(this, "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
             });
         });

@@ -27,38 +27,6 @@ public class DownloadControl {
     private static final String PATH_FOLDER_IMAGE = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "AppGallery";
     private static final int LIMIT_DOWNLOAD = 20;
 
-//    public static void downloadFiles1(Context context, ArrayList<String> listUrl, String nameDir) {
-//        DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
-//        /*tạo folder với tên image đầu tiên trong list*/
-//        if (listUrl != null && !listUrl.isEmpty()) {
-//            nameDir += System.currentTimeMillis() + "";
-//            File file = new File(PATH_FOLDER_IMAGE + File.separator + nameDir);
-//            if (!file.exists()) {
-//                file.mkdirs();
-//            }
-//        } else {
-//            return;
-//        }
-//
-//        /*Tải toàn bộ image trong list*/
-//        for (String imageUrl : listUrl) {
-//            int indexLast = imageUrl.lastIndexOf(".");
-//            String nameImage = nameDir + "_" + System.currentTimeMillis();
-//            nameImage += imageUrl.substring(indexLast);
-//            if (downloadManager != null) {
-//                Uri uri = Uri.parse(imageUrl);
-//                downloadManager.enqueue(new DownloadManager.Request(uri)
-//                        .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI |
-//                                DownloadManager.Request.NETWORK_MOBILE)
-//                        .setAllowedOverRoaming(false)
-//                        .setTitle(nameImage)
-//                        .setDescription("Tải về hình ảnh")
-//                        .setDestinationInExternalPublicDir(File.separator + "AppGallery" + File.separator + nameDir,
-//                                nameImage));
-//            }
-//        }
-//    }
-
     public static void downloadFiles(Context context, ArrayList<DataImage.Image> listUrl, String nameDir, OnDownloadLimit onDownloadLimit) {
         DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
         /*tạo folder với tên image đầu tiên trong list*/
@@ -80,6 +48,43 @@ public class DownloadControl {
             if (downloadManager != null) {
                 if (isDownload()) {
                     Uri uri = Uri.parse(image.getUrl());
+                    downloadManager.enqueue(new DownloadManager.Request(uri)
+                            .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI |
+                                    DownloadManager.Request.NETWORK_MOBILE)
+                            .setAllowedOverRoaming(false)
+                            .setTitle(nameImage)
+                            .setDescription("Tải về hình ảnh")
+                            .setDestinationInExternalPublicDir(File.separator + "AppGallery" + File.separator + nameDir,
+                                    nameImage));
+                } else {
+                    onDownloadLimit.onLimitDownload();
+                    return;
+                }
+            }
+        }
+    }
+
+    public static void downloadFileByUrls(Context context, ArrayList<String> listUrl, String nameDir, OnDownloadLimit onDownloadLimit) {
+        DownloadManager downloadManager = (DownloadManager) context.getSystemService(DOWNLOAD_SERVICE);
+        /*tạo folder với tên image đầu tiên trong list*/
+        if (listUrl != null && !listUrl.isEmpty()) {
+            nameDir += System.currentTimeMillis() + "";
+            File file = new File(PATH_FOLDER_IMAGE + File.separator + nameDir);
+            if (!file.exists()) {
+                file.mkdirs();
+            }
+        } else {
+            return;
+        }
+
+        /*Tải toàn bộ image trong list*/
+        for (String url : listUrl) {
+            int indexLast = url.lastIndexOf(".");
+            String nameImage = nameDir + "_" + System.currentTimeMillis();
+            nameImage += url.substring(indexLast);
+            if (downloadManager != null) {
+                if (isDownload()) {
+                    Uri uri = Uri.parse(url);
                     downloadManager.enqueue(new DownloadManager.Request(uri)
                             .setAllowedNetworkTypes(DownloadManager.Request.NETWORK_WIFI |
                                     DownloadManager.Request.NETWORK_MOBILE)
