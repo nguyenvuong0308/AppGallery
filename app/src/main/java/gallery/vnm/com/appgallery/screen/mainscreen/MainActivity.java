@@ -225,8 +225,16 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
                 break;
                 case R.id.download: {
                     Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
-                    DownloadControl.downloadFiles(this, item.getImages(), mDrawerLayoutAdapter.getMenuSelected().getAlbumName() + "_" + item.getTextClientId(), () -> {
-                        Toast.makeText(this, "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+                    DownloadControl.downloadFiles(this, item.getImages(), mDrawerLayoutAdapter.getMenuSelected().getAlbumName() + "_" + item.getTextClientId(), new DownloadControl.OnDownloadCallBack() {
+                        @Override
+                        public void onLimitDownload() {
+                            Toast.makeText(getApplicationContext(), "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+                        }
+
+                        @Override
+                        public void onDownloadError() {
+                            Toast.makeText(getApplicationContext(), "Không thể tải về!", Toast.LENGTH_SHORT).show();
+                        }
                     });
                 }
                 break;

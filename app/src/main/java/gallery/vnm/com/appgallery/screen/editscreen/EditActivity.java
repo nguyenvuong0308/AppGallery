@@ -155,9 +155,18 @@ public class EditActivity extends AppCompatActivity {
                 break;
                 case R.id.download: {
                     Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
-                    DownloadControl.downloadFiles(this, mDataImage.getDataImage().getImages(), mMyApplication.getAlbumName() + "_" + mDataImage.getDataImage().getTextClientId(), () -> {
-                        Toast.makeText(this, "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
-                    });
+                    DownloadControl.downloadFiles(this, mDataImage.getDataImage().getImages(),
+                            mMyApplication.getAlbumName() + "_" + mDataImage.getDataImage().getTextClientId(), new DownloadControl.OnDownloadCallBack() {
+                                @Override
+                                public void onLimitDownload() {
+                                    Toast.makeText(getApplicationContext(), "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onDownloadError() {
+                                    Toast.makeText(getApplicationContext(), "Không thể tải xuống!", Toast.LENGTH_SHORT).show();
+                                }
+                            });
                 }
                 break;
                 case R.id.hint: {
