@@ -28,7 +28,6 @@ import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 import gallery.vnm.com.appgallery.MyApplication;
 import gallery.vnm.com.appgallery.R;
@@ -62,6 +61,7 @@ public class ShowImageActivity extends YouTubeBaseActivity {
     private YouTubePlayerView youTubePlayerView;
     private YouTubePlayer.OnInitializedListener mOnInitializedListener;
     private boolean mResultOk = false;
+    private DownloadControl.OnDownloadCallBack onDownloadCallBack;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -80,6 +80,17 @@ public class ShowImageActivity extends YouTubeBaseActivity {
         mMyApplication = (MyApplication) getApplication();
         mRcvImage = findViewById(R.id.rcvImages);
         youTubePlayerView = findViewById(R.id.youtubeView);
+        onDownloadCallBack = new DownloadControl.OnDownloadCallBack() {
+            @Override
+            public void onLimitDownload() {
+                Toast.makeText(getApplicationContext(), "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDownloadError() {
+                Toast.makeText(getApplicationContext(), "Không thể tải về!", Toast.LENGTH_SHORT).show();
+            }
+        };
         mOnInitializedListener = new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
@@ -124,17 +135,7 @@ public class ShowImageActivity extends YouTubeBaseActivity {
                 ArrayList<DataImage.Image> image = new ArrayList<>();
                 image.add(item);
                 Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
-                DownloadControl.downloadFiles(this, image, mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), new DownloadControl.OnDownloadCallBack() {
-                    @Override
-                    public void onLimitDownload() {
-                        Toast.makeText(getApplicationContext(), "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
-                    }
-
-                    @Override
-                    public void onDownloadError() {
-                        Toast.makeText(getApplicationContext(), "Không thể tải về!", Toast.LENGTH_SHORT).show();
-                    }
-                });
+                DownloadControl.downloadFiles(this, image, mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), onDownloadCallBack);
             });
         }
 
@@ -169,17 +170,7 @@ public class ShowImageActivity extends YouTubeBaseActivity {
             ArrayList<String> urls = new ArrayList<>();
             urls.add(mDataImageTmp.getDataImage().getVideoInfo().getUrlDownload());
             urls.add(mDataImageTmp.getDataImage().getVideoInfo().getUrlThumb());
-              DownloadControl.downloadFileByUrls(this, urls, mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), new DownloadControl.OnDownloadCallBack() {
-                @Override
-                public void onLimitDownload() {
-                    Toast.makeText(getApplicationContext(), "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onDownloadError() {
-                    Toast.makeText(getApplicationContext(), "Không thể tải về!", Toast.LENGTH_SHORT).show();
-                }
-            });
+            DownloadControl.downloadFileByUrls(this, urls, mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), onDownloadCallBack);
         });
 
     }
@@ -207,17 +198,11 @@ public class ShowImageActivity extends YouTubeBaseActivity {
                 break;
                 case R.id.download: {
                     Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
-                    DownloadControl.downloadFiles(Objects.requireNonNull(this), mDataImageTmp.getDataImage().getImages(), mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), new DownloadControl.OnDownloadCallBack() {
-                        @Override
-                        public void onLimitDownload() {
-                            Toast.makeText(getApplicationContext(), "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onDownloadError() {
-                            Toast.makeText(getApplicationContext(), "Không thể tải về!", Toast.LENGTH_SHORT).show();
-                        }
-                });
+                    if (mDataImageTmp.getDataImage().getPostType().equals(TypePost.VIDEO)) {
+                        DownloadControl.downloadFileVideos(this, mDataImageTmp.getDataImage().getVideoInfo(), mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), onDownloadCallBack);
+                    } else {
+                        DownloadControl.downloadFiles(this, mDataImageTmp.getDataImage().getImages(), mDataImageTmp.getAlbum().getAlbumName() + "_" + mDataImageTmp.getDataImage().getTextClientId(), onDownloadCallBack);
+                    }
                 }
                 break;
 

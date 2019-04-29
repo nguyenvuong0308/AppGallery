@@ -51,7 +51,7 @@ public class EditActivity extends AppCompatActivity {
     private TextView mTvAlbumName;
     private DataImageTmp mDataImage;
     private MyApplication mMyApplication;
-
+    private DownloadControl.OnDownloadCallBack onDownloadCallBack;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +70,17 @@ public class EditActivity extends AppCompatActivity {
         mRcvImages = findViewById(R.id.rcvImages);
         mEdtMessage = findViewById(R.id.edtMessage);
         mIvWriterThumb = findViewById(R.id.ivWriterThumb);
+        onDownloadCallBack = new DownloadControl.OnDownloadCallBack() {
+            @Override
+            public void onLimitDownload() {
+                Toast.makeText(getApplicationContext(), "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDownloadError() {
+                Toast.makeText(getApplicationContext(), "Không thể tải về!", Toast.LENGTH_SHORT).show();
+            }
+        };
         initData();
         binEvent();
     }
@@ -155,18 +166,11 @@ public class EditActivity extends AppCompatActivity {
                 break;
                 case R.id.download: {
                     Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
-                    DownloadControl.downloadFiles(this, mDataImage.getDataImage().getImages(),
-                            mMyApplication.getAlbumName() + "_" + mDataImage.getDataImage().getTextClientId(), new DownloadControl.OnDownloadCallBack() {
-                                @Override
-                                public void onLimitDownload() {
-                                    Toast.makeText(getApplicationContext(), "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
-                                }
-
-                                @Override
-                                public void onDownloadError() {
-                                    Toast.makeText(getApplicationContext(), "Không thể tải xuống!", Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                    if (mDataImage.getDataImage().getPostType().equals(TypePost.VIDEO)) {
+                        DownloadControl.downloadFileVideos(this, mDataImage.getDataImage().getVideoInfo(), mMyApplication.getAlbumName() + "_" + mDataImage.getDataImage().getTextClientId(), onDownloadCallBack);
+                    } else {
+                        DownloadControl.downloadFiles(this, mDataImage.getDataImage().getImages(), mMyApplication.getAlbumName() + "_" + mDataImage.getDataImage().getTextClientId(), onDownloadCallBack);
+                    }
                 }
                 break;
                 case R.id.hint: {

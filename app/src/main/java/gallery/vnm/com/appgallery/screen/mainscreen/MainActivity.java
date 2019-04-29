@@ -42,6 +42,7 @@ import gallery.vnm.com.appgallery.model.Album;
 import gallery.vnm.com.appgallery.model.DataImage;
 import gallery.vnm.com.appgallery.model.DataImageTmp;
 import gallery.vnm.com.appgallery.model.EnumFlag;
+import gallery.vnm.com.appgallery.model.TypePost;
 import gallery.vnm.com.appgallery.model.network.RequestApiNetwork;
 import gallery.vnm.com.appgallery.screen.LoginActivity;
 import gallery.vnm.com.appgallery.screen.drawerlayout.ContentLayoutContact;
@@ -77,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     private DrawerLayout mDrawerLayout;
     private GoogleAccountCredential mCredential;
     private MyApplication mMyApplication;
+    private DownloadControl.OnDownloadCallBack onDownloadCallBack;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -225,17 +228,11 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
                 break;
                 case R.id.download: {
                     Toast.makeText(this, "Đang tải ảnh về...", Toast.LENGTH_SHORT).show();
-                    DownloadControl.downloadFiles(this, item.getImages(), mDrawerLayoutAdapter.getMenuSelected().getAlbumName() + "_" + item.getTextClientId(), new DownloadControl.OnDownloadCallBack() {
-                        @Override
-                        public void onLimitDownload() {
-                            Toast.makeText(getApplicationContext(), "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onDownloadError() {
-                            Toast.makeText(getApplicationContext(), "Không thể tải về!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    if (item.getPostType().equals(TypePost.VIDEO)) {
+                        DownloadControl.downloadFileVideos(this, item.getVideoInfo(), mDrawerLayoutAdapter.getMenuSelected().getAlbumName() + "_" + item.getTextClientId(), onDownloadCallBack);
+                    } else {
+                        DownloadControl.downloadFiles(this, item.getImages(), mDrawerLayoutAdapter.getMenuSelected().getAlbumName() + "_" + item.getTextClientId(), onDownloadCallBack);
+                    }
                 }
                 break;
 
@@ -270,6 +267,17 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
         mTvWarning = findViewById(R.id.tvWarning);
         mRcvListImage = findViewById(R.id.rcvListImage);
         mDrawerLayout = findViewById(R.id.drawerLayout);
+        onDownloadCallBack = new DownloadControl.OnDownloadCallBack() {
+            @Override
+            public void onLimitDownload() {
+                Toast.makeText(getApplicationContext(), "Bạn đã hết số lượt tải trong ngày!", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDownloadError() {
+                Toast.makeText(getApplicationContext(), "Không thể tải về!", Toast.LENGTH_SHORT).show();
+            }
+        };
     }
 
     @Override
@@ -382,3 +390,4 @@ public class MainActivity extends AppCompatActivity implements DrawerLayoutContr
     }
 
 }
+

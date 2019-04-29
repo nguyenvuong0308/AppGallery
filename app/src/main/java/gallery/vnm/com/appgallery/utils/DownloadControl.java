@@ -281,6 +281,13 @@ public class DownloadControl {
         return Long.parseLong(elements.text() + "000");
     }
 
+    public static void downloadFileVideos(Context context, DataImage.Video videoInfo, String nameDir, OnDownloadCallBack onDownloadCallBack) {
+        ArrayList<String> listItem = new ArrayList<>();
+        listItem.add(videoInfo.getUrlDownload());
+        listItem.add(videoInfo.getUrlThumb());
+        downloadFileByUrls(context, listItem, nameDir, onDownloadCallBack);
+    }
+
     public interface OnDownloadCallBack {
         void onLimitDownload();
 
